@@ -16,26 +16,14 @@ E_INOM E_INOMW E_LL E_LL0 E_LBGYN E_LCSN E_LCLCSN  E_LCNLCSN  E_LEXYN E_LGSN  E_
 E_LISN E_LOL E_LPCP E_LPMP E_LPXP E_LTRYN E_LUCYN E_LUCLCYN E_LYGAP E_LYKPPI E_LYWR E_LYWY E_MRY E_PHI 
 E_PHIC E_PHIPI E_PHIM E_PHIML E_PHIW E_PHIX E_PHIXL E_Q E_R E_TAXYN E_TBYN E_TRTAXYN E_TRW E_TRYN E_TW E_UCAP  
 E_UCAP0 E_VL E_VLLC E_WPHI E_WRPHI E_WS  E_WSW E_ZEPS_C E_ZEPS_ETA E_ZEPS_ETAM E_ZEPS_ETAX E_ZEPS_EX E_ZEPS_G 
-E_ZEPS_IG E_ZEPS_L E_ZEPS_M E_ZEPS_PPI E_ZEPS_RPREME E_ZEPS_RPREMK	E_ZEPS_TR   E_ZEPS_W  E_ZPHIT E_LCY E_LGY E_LWS
-
-
-//**************************************************************************
-// Modelbase Variables                                                   //*
-    interest inflation inflationq outputgap;                             //*
-//**************************************************************************    
- 
+E_ZEPS_IG E_ZEPS_L E_ZEPS_M E_ZEPS_PPI E_ZEPS_RPREME E_ZEPS_RPREMK	E_ZEPS_TR   E_ZEPS_W  E_ZPHIT E_LCY E_LGY E_LWS;
     
 varexo
 E_EPS_C  E_EPS_ETA  E_EPS_ETAM E_EPS_ETAX  E_EPS_EX  E_EPS_G E_EPS_IG E_EPS_INOMW E_EPS_L E_EPS_LOL E_EPS_M  E_EPS_PPI 
-E_EPS_PW    E_EPS_RPREME	E_EPS_RPREMK	E_EPS_TR    E_EPS_W   E_EPS_Y  E_EPS_YW 
+E_EPS_PW    E_EPS_RPREME	E_EPS_RPREMK	E_EPS_TR    E_EPS_W   E_EPS_Y  E_EPS_YW;
 
 
-//**************************************************************************
-// Modelbase Shocks                                                      //*       
-    interest_ fiscal_ ;                                                 //*
-//**************************************************************************
-      
-  
+
 parameters
 A1E A2E  ALPHAX  ALPHAE  ALPHAGE  BETAE BGADJ1 BGADJ2 BGTAR DELTAE DELTAGE DGEX DGIM DGPM  DGPX DDYN  E_EX_INOMW
 E_EX_R   E_EX_RW G1E  GAMI2E  GAMIE  GAMLE GAMPE  GAMPME GAMPXE  GAMWE GP0 GPCPI0 GPOP0  GPW0 GSLAG  GVECM  
@@ -44,11 +32,6 @@ GYW0 HABE HABLE IGSLAG IGVECM ILAGE INFLAGE IG1E IGSN ISN KAPPAE L0 LOL LYWY0 OM
 RHOEXE RHOGE RHOIG RHOL0 RHOLE  RHOLOL RHOPPI1 RHOPPI2 RHOPPI3 RHOPPI4  RHOPCPM  RHOPWPX  RHORPE  RHORPK  RHOUCAP0 
 RII  RIP  RIX RPI RPP RPX RXI RXP RXX RXY  RPREME RPREMK SE SFPE SFPME SFPXE SFWE SIGC SIGEXE SIGIME  SLC SSC
 TAUE TP  THETAE TINFE TR1E TRSN RHOTR TYE1 TYE2 TVAT TW0 TW1 UCAP0 WRLAG ZETE interestq_exog inflationannual_exog;
-
-// Modelbase Parameters                                                  //*
-// not needed for replication
-
-
 
 //estimated parameters (mean posterior distribution) (See Table 1)
 A2E        =   0.0453;
@@ -131,7 +114,7 @@ ZETE       =   0.4000;
 
 // SWITCHES for various simulations
 DDYN = 1;
-GFLAG=1;
+GFLAG=1;  
 GLAGFLAG=1;
 IGLAGFLAG=1;
 IGFLAG=1;
@@ -148,7 +131,7 @@ A1E        =    0.0669; % this is actually a function of the steady state and es
 OMEGE      =   1.4836; % this is actually a function of the steady state and estimated parameters to get L0=0.65;
 GSN        =   0.203; 
 IGSN      =    0.025; 
-//ISN        =   0.17; % used only when DDYN=0, and RPREMK would be a function of ISN;
+ISN        =   0.17; % used only when DDYN=0, and RPREMK would be a function of ISN;
 GPCPI0     =   0; 
 GP0        =   0.005; 
 GPW0       =   GP0;
@@ -179,50 +162,12 @@ RXX = 0.495000246553550;
 RHOPPI1 =   0.24797097628284;
 RHOPPI2 =  0.13739098460472;
 RHOPPI3 =  0.10483962746747;
-RHOPPI4 =  0.09282876044442;                                                               //*
+RHOPPI4 =  0.09282876044442;                                                              
 
 interestq_exog=1.00901606;
 inflationannual_exog=1.02;
 
 model;
-
-//**************************************************************************
-// Definition of Modelbase Variables in Terms of Original Model Variables //*
-
-interest   = ((E_INOM+1)^4-interestq_exog^4)/interestq_exog^4;            //*
-inflation = (1/4)*(inflationq+inflationq(-1)+inflationq(-2)+inflationq(-3));  //*
-inflationq = (4*E_PHIC+1-inflationannual_exog)/inflationannual_exog;     //*
-outputgap  = E_LYGAP;                                                    //*
- //**************************************************************************
-
-
-//**************************************************************************                                                                    
-// Policy Rule                                                           //*
-
-//interest =   cofintintb1*interest(-1)                                    //* 
-//           + cofintintb2*interest(-2)                                    //* 
-//           + cofintintb3*interest(-3)                                    //* 
-//           + cofintintb4*interest(-4)                                    //* 
-//           + cofintinf0*inflationq                                       //* 
-//           + cofintinfb1*inflationq(-1)                                  //* 
-//           + cofintinfb2*inflationq(-2)                                  //* 
-//           + cofintinfb3*inflationq(-3)                                  //* 
-//           + cofintinfb4*inflationq(-4)                                  //* 
-//           + cofintinff1*inflationq(+1)                                  //* 
-//           + cofintinff2*inflationq(+2)                                  //* 
-//           + cofintinff3*inflationq(+3)                                  //* 
-//           + cofintinff4*inflationq(+4)                                  //* 
-//           + cofintout*outputgap 	                                       //* 
-//           + cofintoutb1*outputgap(-1)                                   //* 
-//           + cofintoutb2*outputgap(-2)                                   //* 
-//           + cofintoutb3*outputgap(-3)                                   //* 
-//           + cofintoutb4*outputgap(-4)                                   //* 
-//           + cofintoutf1*outputgap(+1)                                   //* 
-//           + cofintoutf2*outputgap(+2)                                   //* 
-//           + cofintoutf3*outputgap(+3)                                   //* 
-//           + cofintoutf4*outputgap(+4)                                   //* 
-//           + std_r_ *interest_;                                          //* 
-//**************************************************************************
 
 //old Monetary policy rule
 E_INOM = ILAGE*E_INOM(-1)+(1-ILAGE)*(E_EX_R + E_ZPHIT + TINFE*(E_PHIC-E_ZPHIT) + TYE1*E_LYGAP(-1) ) 
@@ -351,8 +296,9 @@ exp(E_LBGYN) = (1+E_R-E_GY-GPOP0)*exp(E_LBGYN(-1))+exp(E_LGSN) + exp(E_LIGSN) + 
      -(E_TW+SSC)*E_WS -TP*(1-E_WS) -TVAT*exp(E_LCSN)-E_TAXYN;                                     //  35: BG
 
 //Fiscal policy rule (government consumption)
-E_GG-GY0 = GSLAG*(E_GG(-1)-GY0) + GFLAG*GVECM*(E_LGSN(-1)-log(GSN)) +  
-    GFLAG*G1E*(E_LYGAP-E_LYGAP(-1)) + GFLAG*GEXOFLAG*E_ZEPS_G + (1-GFLAG)*(E_ZEPS_G-E_ZEPS_G(-1)); //  36: G
+E_GG-GY0 = GSLAG*(E_GG(-1)-GY0) + GFLAG*GVECM*(E_LGSN(-1)-log(GSN)) 
+            + GFLAG*G1E*(E_LYGAP-E_LYGAP(-1)) + GFLAG*GEXOFLAG*E_ZEPS_G + (1-GFLAG)*(E_ZEPS_G-E_ZEPS_G(-1)); //  36: G
+
 
 //Fiscal policy rule (government investment)
 E_GIG-GY0-GPCPI0 = IGSLAG*(E_GIG(-1)-GY0-GPCPI0) + IGFLAG*IGVECM*(E_LIGSN(-1)-log(IGSN)) +  
@@ -416,8 +362,7 @@ E_ZEPS_ETAX = RHOETAX*E_ZEPS_ETAX(-1)+E_EPS_ETAX;                               
 E_ZEPS_EX = RHOEXE*E_ZEPS_EX(-1)+E_EPS_EX;                                                         // 55: E_ZEPS_EX
 
 //Fiscal Policy shock (government consumption)
-E_ZEPS_G = RHOGE*E_ZEPS_G(-1) + E_EPS_G;  
-//E_ZEPS_G = RHOGE*E_ZEPS_G(-1) + fiscal_;                                                           // 56: ZEPS_G
+E_ZEPS_G = RHOGE*E_ZEPS_G(-1) + E_EPS_G;                                                           // 56: ZEPS_G                                                   
 
 //Fiscal Policy shock (government investment)
 E_ZEPS_IG = RHOIG*E_ZEPS_IG(-1) + IGEXOFLAG*E_EPS_IG;                                              // 57: ZEPS_IG
@@ -637,9 +582,6 @@ E_ZPHIT      =0.0050;
 E_LCY        =-0.5381;
 E_LGY        =-1.5945;
 E_LWS        =-0.7593;
-interest     = 0;      
-inflation    = 0;
-outputgap    =0;
 end;
 
 

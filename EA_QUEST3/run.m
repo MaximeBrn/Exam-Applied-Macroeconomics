@@ -11,7 +11,7 @@ close all;
 cd([cd '/EA_QUEST3_rep']);
 
 % Run replication dynare file
-dynare EA_Quest3_rep nostrict
+dynare EA_Quest3_rep
 
 oo_.irfs
 
@@ -40,6 +40,9 @@ rirf =  E_R_E_EPS_G; % Real interest rate
 geirf =  cumsum(E_GE_E_EPS_G); % Nominal exchange rate
 
 fiscalmultiplier=yirf./ggirf/GSN % Formula of fiscal multiplier
+
+spending_fm_short=fiscalmultiplier(1)
+spending_fm_long=fiscalmultiplier(4)
 
  % Go back to original path
 cd('..');
@@ -104,7 +107,7 @@ plot(t,gigirf,'LineWidth',2);hold on;
 plot(t,zeroline,'LineWidth',1);
 axis([0 42 -2*10^(-4) 6*10^(-4)]);
 xlabel('quarters','FontSize',8);
-title('$$GI$$','interpreter','latex','FontSize',10);
+title('$$GI_t$$','interpreter','latex','FontSize',10);
 
 subplot(3,3,9); % Government transfers
 plot(t,gtrirf,'LineWidth',2);hold on;
