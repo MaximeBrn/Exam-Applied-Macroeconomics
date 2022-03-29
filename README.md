@@ -92,3 +92,5 @@ An idea to compute the Bayesian uncertainty bounds:
 - Identify the 90% bound of responses
 - Plot with confidence interval
 - Deduce the confidence intervals of the fiscal multiplier
+
+https://forum.dynare.org/t/dsge-irfs-from-bayesian-estimation/3477/3
