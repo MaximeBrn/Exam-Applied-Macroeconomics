@@ -86,8 +86,9 @@ Question to ask:
 - How to compute the Bayesian confidence intervals? Look at Appendix 2 of Ratto et al. (2008)?
 - Should we take into account other source of uncertainty? Element of answer in Smets and Wouter, 2004, Forecasting with a bayesian DSGE model (page 10/32).
 
-- 
-
-
-
-[^1]: Explain
+An idea to compute the Bayesian uncertainty bounds:
+- Draw a list of parameters estimate from their posterior distribution
+- Run for each draw a simulation and store the response
+- Identify the 90% bound of responses
+- Plot with confidence interval
+- Deduce the confidence intervals of the fiscal multiplier
