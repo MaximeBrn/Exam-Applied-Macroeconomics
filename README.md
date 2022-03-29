@@ -27,6 +27,10 @@ QUEST III seems to be a better choice because:
 
 # Replicating the paper results
 
+On the github of the MMB, we can find a [replication of the model QUEST III](https://github.com/IMFS-MMB/mmb-rep/tree/master/EA_QUEST3). There is also the list of the variables used in the model [here](https://github.com/IMFS-MMB/mmb-gui-mlab/blob/master/MODELS/EA_QUEST3/list_of_variables.xls).
+
+Before answering the question, we need to make sure that the code works and replicates the results of the authors.
+
 ## How to run the code?
 
 In the folder `EA_QUEST3`, run the file `run.m`. This file plot the response function. It is based on the file `EA_QUEST3_rep.mod` which is located in the folder `EA_QUEST3_rep`. 
@@ -34,8 +38,6 @@ In the folder `EA_QUEST3`, run the file `run.m`. This file plot the response fun
 Note: make sure you have configured Dynare on Matlab permanently (i.e. using `Set Path` instead of `Addpath`).
 
 ## Compare results
-
-On the github of the MMB, we can find a [replication of the model QUEST III](https://github.com/IMFS-MMB/mmb-rep/tree/master/EA_QUEST3). There is also the list of the variables used in the model [here](https://github.com/IMFS-MMB/mmb-gui-mlab/blob/master/MODELS/EA_QUEST3/list_of_variables.xls).
 
 Slightly modifying and adapting the code we can replicate the results of Ratto et al. (2008) on the response to government consumption.
 
