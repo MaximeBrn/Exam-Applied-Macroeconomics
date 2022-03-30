@@ -1,5 +1,6 @@
 % Run and plot IRF of replication file 
 
+% TEST 
 % EA_QUEST3 model
 
 clear all;
