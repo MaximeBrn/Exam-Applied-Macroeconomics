@@ -3,7 +3,6 @@
 
 % EA_QUEST3 model
 
-clear all;
 clc;
 close all;
 
@@ -12,9 +11,14 @@ close all;
 cd([cd '/EA_QUEST3_rep']);
 
 % Run replication dynare file
-dynare EA_Quest3_rep
 
-oo_.irfs
+
+dynare EA_Quest3_rep_rand.mod
+stoch_simul (drop=200, order=1, irf = 41, ar=0, periods=0, nograph, noprint, conditional_variance_decomposition =[1 4],irf_shocks=(E_EPS_G,E_EPS_IG)) E_INOM E_PHIC E_LYGAP E_PHI E_GY E_GC E_GI E_GCNLC E_GCLC E_TBYN E_GG E_GIG E_GTR E_GL E_GWRY E_DBGYN E_R E_GE E_GTFP;
+set_param_value('G1E',-0.08);
+% Will have to use https://forum.dynare.org/t/loop-over-parameters/3335/2
+
+oo_.irfs;
 
 %%% GOVERNMENT CONSUMPTION %%%%
 
@@ -34,16 +38,16 @@ glirf =  cumsum(E_GL_E_EPS_G); % Employment rate growth
 rwirf =  cumsum(E_GWRY_E_EPS_G+E_GY_E_EPS_G); % (real wages/real gdp) growth 
 dbgynirf =  E_DBGYN_E_EPS_G; % Deficit
 ygapirf =  E_LYGAP_E_EPS_G; % Log ouput gap
-phiirf = E_PHI_E_EPS_G % Inflation
+phiirf = E_PHI_E_EPS_G; % Inflation
 infirf = E_PHIC_E_EPS_G; % Inflation of C deflator
 inomirf = E_INOM_E_EPS_G; % Nominal interest rate
 rirf =  E_R_E_EPS_G; % Real interest rate
 geirf =  cumsum(E_GE_E_EPS_G); % Nominal exchange rate
 
-fiscalmultiplier=yirf./ggirf/GSN % Formula of fiscal multiplier
+fiscalmultiplier=yirf./ggirf/GSN; % Formula of fiscal multiplier
 
-spending_fm_short=fiscalmultiplier(1)
-spending_fm_long=fiscalmultiplier(4)
+spending_fm_short=fiscalmultiplier(1);
+spending_fm_long=fiscalmultiplier(4);
 
  % Go back to original path
 cd('..');
@@ -188,4 +192,5 @@ plot(t,fiscalmultiplier,'LineWidth',2);
 xlabel('quarters','FontSize',8);
 title('Government spending multipliers','FontSize',10);
 
-
+GAMWE
+G1E
