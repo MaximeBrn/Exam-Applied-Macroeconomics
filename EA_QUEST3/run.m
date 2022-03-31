@@ -186,6 +186,3 @@ figure
 plot(t,fiscalmultiplier,'LineWidth',2);
 xlabel('quarters','FontSize',8);
 title('Government spending multipliers','FontSize',10);
-
-GAMWE
-G1E
