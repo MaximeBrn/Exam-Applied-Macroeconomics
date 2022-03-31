@@ -93,4 +93,6 @@ An idea to compute the Bayesian uncertainty bounds:
 - Plot with confidence interval
 - Deduce the confidence intervals of the fiscal multiplier
 
-https://forum.dynare.org/t/dsge-irfs-from-bayesian-estimation/3477/3
+See https://forum.dynare.org/t/dsge-irfs-from-bayesian-estimation/3477/3
+See also https://archives.dynare.org/phpBB3/viewtopic.php%3Fp=13129.html
+
