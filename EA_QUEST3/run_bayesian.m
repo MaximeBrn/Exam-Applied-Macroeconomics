@@ -62,7 +62,7 @@ title('Government spending multipliers 2','FontSize',10);
     % We obtain several responses to shocks
     % We can a Bayesian confidence interval around the mean response
 
-H=100; % Set the number of the simulations
+H=200; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -136,7 +136,7 @@ res_fm=nan(n,H);
 res_fm2=nan(n,H);
 for h=1:H
     % We modify the parameters values with the i-th draw
-    % Negative posterior mean
+    % Negative posterior mean (Remove it for small H)
 %     set_param_value('G1E',G1E_vec(h));
 %     set_param_value('GSLAG',GSLAG_vec(h)); % Remove it for small H
 %     set_param_value('GVECM',GVECM_vec(h));
@@ -349,3 +349,19 @@ plot(t_small,fm2_baseline(1:horizon),'LineWidth',2); hold on
 plot(t_small,fm2_mean(1:horizon),'LineWidth',2); hold on
 xlabel('quarters','FontSize',8);
 title('FM 2nd formula (mean vs. baseline)','FontSize',10);
+
+% RIGHT WAY TO PLOT CONFIDENCE INTERVALS
+% figure
+% 
+% subplot(2,2,1) % fiscal multiplier 1st formula
+% plot(t,fm_mean,'LineWidth',2); hold on
+% fill([t fliplr(t)], [fm_CI_lower' flipud(fm_CI_upper)'], 1,'facecolor', 'red', 'edgecolor', 'none', 'facealpha', 0.4); hold on
+% xlabel('quarters','FontSize',8);
+% title('FM 1st formula','FontSize',10);
+% 
+% subplot(2,2,2) % fiscal multiplier 2nd formula
+% plot(t,fm2_mean,'LineWidth',2); hold on
+% fill([t fliplr(t)], [fm2_CI_lower' flipud(fm2_CI_upper)'], 1,'facecolor', 'red', 'edgecolor', 'none', 'facealpha', 0.4); hold on
+% xlabel('quarters','FontSize',8);
+% title('FM 2nd formuma','FontSize',10);
+
