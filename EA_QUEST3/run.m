@@ -1,10 +1,5 @@
 % Run and plot IRF of replication file 
 
-<<<<<<< HEAD
-% TEST 
-=======
-
->>>>>>> With_Bayesian_bounds
 % EA_QUEST3 model
 
 clc;
