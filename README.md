@@ -70,7 +70,7 @@ For robustness, we also checked that we find the same response for a government 
 - [ ] Response to a permanent public consumption shock 
 
 Question to ask:
-- How to make a shock permanent when using stoch_simul? Element of answer [here](https://forum.dynare.org/t/permanent-shock-in-stochastic-simulation/2399/3)
+- How to make a shock permanent when using stoch_simul? Element of answer [here](https://forum.dynare.org/t/permanent-shock-in-stochastic-simulation/2399/3). https://forum.dynare.org/t/permanent-shock/4303
 - On which parameters are we allowed to play?
 - Should we only focus on government consumption? Or look also at investment and transfers?
 
