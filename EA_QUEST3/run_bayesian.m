@@ -30,7 +30,8 @@ gg_baseline = cumsum(E_GG_E_EPS_G); % Response of government consumption growth
 % Store the fiscal multipliers
     % We should recover the 0.73 for Q1 and 0.45 for Q4
 fm_baseline=y_baseline./gg_baseline/GSN; % 1st formula
-fm2_baseline=(cumprod(1+E_GY_E_EPS_G)-1)./(cumprod(1+E_GG_E_EPS_G)-1)/GSN; % 2 nd formula
+GY0_vec = ones(1, length(y_baseline)) * GY0;
+fm2_baseline=(cumprod(1+E_GY_E_EPS_G+GY0)-cumprod(1+GY0_vec)')./(cumprod(1+E_GG_E_EPS_G+GY0)-cumprod(1+GY0_vec)')/GSN; % 2 nd formula
     % Check
     fm_baseline(1);
     fm_baseline(4);
@@ -52,17 +53,18 @@ xlabel('quarters','FontSize',8);
 title('Government spending multipliers 2','FontSize',10);
 
 %% Reponse with uncertainty bounds
-    % For each parameter, we draw a value from the posterior distribution
-    % For each parameter, the posterior distribution is either beta or gamma
+    % For each parameter, we draw a value
+    % Either draw from prior distribution
+    % Either draw from a normal distribution
     % Paper Table 1, posterior mean and st.dev of parameters are reported
     % From mean and variance we deduce the distribution inputs
-    % See Excel file for computation of the distribution inputs
+    % See Excel file for computation of the beta, gamma, k and theta
     % We are now able to draw a sequence of value for each parameter
     % We can simulate the .mod file for each vector of parameters value
     % We obtain several responses to shocks
     % We can a Bayesian confidence interval around the mean response
 
-H=200; % Set the number of the simulations
+H=100; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -70,55 +72,103 @@ rng(s); % Specify the seed
     % See the Excel file for the distribution inputs
     % Store the H values in a vector called VarName_vec
         
-% Parameters with a negative posterior mean
-G1E_vec         =   -betarnd(0.3871750148721,4.74777213197273,1,H);
-GSLAG_vec       =   -betarnd(9.09571408283434,12.4224171753496,1,H);
-GVECM_vec       =   -betarnd(10.4425602204091,56.1979006628652,1,H);
-IGVECM_vec      =   -betarnd(6.04568315131211,43.4279923913401,1,H);
+% Draw vectors from normal law
+G1E_vec  =   normrnd(-0.0754,0.1066,1,H);
+GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
+GVECM_vec  =   normrnd(-0.1567,0.0442,1,H);
+IGVECM_vec  =   normrnd(-0.1222,0.0461,1,H);
+A2E_vec  =   normrnd(0.0453,0.0128,1,H);
+GAMIE_vec  =   normrnd(76.0366,20.5526,1,H);
+GAMI2E_vec  =   normrnd(1.1216,0.5185,1,H);
+GAMLE_vec  =   normrnd(58.2083,12.2636,1,H);
+GAMPE_vec  =   normrnd(61.4415,10.4208,1,H);
+GAMPME_vec  =   normrnd(1.6782,0.9092,1,H);
+GAMPXE_vec  =   normrnd(26.1294,16.8398,1,H);
+GAMWE_vec  =   normrnd(1.2919,0.8261,1,H);
+HABE_vec  =   normrnd(0.5634,0.0412,1,H);
+HABLE_vec  =   normrnd(0.8089,0.0778,1,H);
+IG1E_vec  =   normrnd(0.1497,0.0996,1,H);
+IGSLAG_vec  =   normrnd(0.4475,0.0895,1,H);
+ILAGE_vec  =   normrnd(0.9009,0.0155,1,H);
+KAPPAE_vec  =   normrnd(1.9224,0.4438,1,H);
+RHOCE_vec  =   normrnd(0.9144,0.0295,1,H);
+RHOETA_vec  =   normrnd(0.1095,0.0771,1,H);
+RHOETAM_vec  =   normrnd(0.9557,0.0164,1,H);
+RHOETAX_vec  =   normrnd(0.8109,0.0668,1,H);
+RHOGE_vec  =   normrnd(0.2983,0.1,1,H);
+RHOIG_vec  =   normrnd(0.853,0.0797,1,H);
+RHOLE_vec  =   normrnd(0.975,0.0159,1,H);
+RHOL0_vec  =   normrnd(0.9334,0.0188,1,H);
+RHOPCPM_vec  =   normrnd(0.6652,0.1409,1,H);
+RHOPWPX_vec  =   normrnd(0.2159,0.0686,1,H);
+RHORPE_vec  =   normrnd(0.9842,0.0103,1,H);
+RHORPK_vec  =   normrnd(0.9148,0.0233,1,H);
+RHOUCAP0_vec  =   normrnd(0.9517,0.0187,1,H);
+RPREME_vec  =   normrnd(0.02,0.0074,1,H);
+RPREMK_vec  =   normrnd(0.0245,0.0026,1,H);
+SE_vec  =   normrnd(0.8588,0.0196,1,H);
+SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
+SFPME_vec  =   normrnd(0.7361,0.1227,1,H);
+SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
+SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
+SIGC_vec  =   normrnd(4.0962,0.813,1,H);
+SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
+SIGIME_vec  =   normrnd(1.1724,0.2136,1,H);
+SLC_vec  =   normrnd(0.3507,0.0754,1,H);
+RHOTR_vec  =   normrnd(0.8636,0.0428,1,H);
+TYE1_vec  =   normrnd(0.4274,0.1141,1,H);
+TYE2_vec  =   normrnd(0.0783,0.0277,1,H);
+WRLAG_vec  =   normrnd(0.2653,0.1315,1,H);
 
-% Parameters with a positive posterior mean
-A2E_vec         =   betarnd(11.9122825378418,251.052011895752,1,H);
-GAMIE_vec       =   gamrnd(13.6871125370781,5.5553426476197,1,H);
-GAMI2E_vec      =   gamrnd(4.67927403523814,0.239695301355207,1,H);
-GAMLE_vec       =   gamrnd(22.5285830778624,2.58375326130466,1,H);
-GAMPE_vec       =   gamrnd(34.7633401512157,1.76742222504333,1,H);
-GAMPME_vec      =   gamrnd(3.40697211803127,0.492578143248719,1,H);
-GAMPXE_vec      =   gamrnd(2.40760377777554,10.8528655093496,1,H);
-GAMWE_vec       =   gamrnd(2.44564013067148,0.528246156823283,1,H);
-HABE_vec        =   betarnd(81.080357597323,62.8322401970025,1,H);
-HABLE_vec       =   betarnd(19.8492375075171,4.68931794744286,1,H);
-IG1E_vec        =   betarnd(1.77116614802584,10.0602710465355,1,H);
-IGSLAG_vec      =   betarnd(13.365,16.5009217877095,1,H);
-ILAGE_vec       =   betarnd(333.88212714256,36.7274045952133,1,H);
-KAPPAE_vec      =   gamrnd(18.7634597430808,0.102454452767374,1,H);
-RHOCE_vec       =   betarnd(81.3292104751508,7.61349564378053,1,H);
-RHOETA_vec      =   betarnd(1.68669468122152,13.7169097134955,1,H);
-RHOETAM_vec     =   betarnd(149.482871932629,6.92904805547293,1,H);
-RHOETAX_vec     =   betarnd(27.0550083713561,6.30916522755388,1,H);
-RHOGE_vec       =   betarnd(5.9456293913,13.9860816087,1,H);
-RHOIG_vec       =   betarnd(15.9853198285919,2.75479720375499,1,H);
-RHOLE_vec       =   betarnd(93.0308739765042,2.38540702503857,1,H);
-RHOL0_vec       =   betarnd(163.236723064735,11.6472742191037,1,H);
-RHOPCPM_vec     =   betarnd(6.79701820447584,3.42098871746619,1,H);
-RHOPWPX_vec     =   betarnd(7.55065652002992,27.4222778015538,1,H);
-RHORPE_vec      =   betarnd(143.276939711565,2.30011750400604,1,H);
-RHORPK_vec      =   betarnd(130.420074851259,12.1466882130819,1,H);
-RHOUCAP0_vec    =   betarnd(124.150243398439,6.30078465498012,1,H);
-RPREME_vec      =   betarnd(7.13850986121256,349.786983199416,1,H);
-RPREMK_vec      =   betarnd(86.5944164201183,3447.87155991124,1,H);
-SE_vec          =   betarnd(270.226910453978,44.4294827155352,1,H);
-SFPE_vec        =   betarnd(29.5031576539166,4.35403497164756,1,H);
-SFPME_vec       =   betarnd(8.76171924619187,3.14117335833451,1,H);
-SFPXE_vec       =   betarnd(29.9690857153074,2.67697715539782,1,H);
-SFWE_vec        =   betarnd(4.75838075897478,1.39257678882095,1,H);
-SIGC_vec        =   gamrnd(25.3852365844692,0.16136150578585,1,H);
-SIGEXE_vec      =   gamrnd(62.795719140625,0.0403817335752031,1,H);
-SIGIME_vec      =   gamrnd(30.126530741068,0.0389158648925282,1,H);
-SLC_vec         =   betarnd(13.6959979217823,25.3573180798781,1,H);
-RHOTR_vec       =   betarnd(54.6695232771421,8.63469543191545,1,H);
-TYE1_vec        =   betarnd(7.60691935607018,10.1912073544356,1,H);
-TYE2_vec        =   betarnd(7.28637478137341,85.7707744060264,1,H);
-WRLAG_vec       =   betarnd(2.72512582214576,7.54673931975307,1,H);
+
+% Draw from prior law
+% G1E_vec  =   -betarnd(0.3871750148721,4.74777213197273,1,H);
+% GSLAG_vec  =   -betarnd(9.09571408283434,12.4224171753496,1,H);
+% GVECM_vec  =   -betarnd(10.4425602204091,56.1979006628652,1,H);
+% IGVECM_vec  =   -betarnd(6.04568315131211,43.4279923913401,1,H);
+% A2E_vec  =   betarnd(11.9122825378418,251.052011895752,1,H);
+% GAMIE_vec  =   gamrnd(13.6871125370781,5.5553426476197,1,H);
+% GAMI2E_vec  =   gamrnd(4.67927403523814,0.239695301355207,1,H);
+% GAMLE_vec  =   gamrnd(22.5285830778624,2.58375326130466,1,H);
+% GAMPE_vec  =   gamrnd(34.7633401512157,1.76742222504333,1,H);
+% GAMPME_vec  =   gamrnd(3.40697211803127,0.492578143248719,1,H);
+% GAMPXE_vec  =   gamrnd(2.40760377777554,10.8528655093496,1,H);
+% GAMWE_vec  =   gamrnd(2.44564013067148,0.528246156823283,1,H);
+% HABE_vec  =   betarnd(81.080357597323,62.8322401970025,1,H);
+% HABLE_vec  =   betarnd(19.8492375075171,4.68931794744286,1,H);
+% IG1E_vec  =   betarnd(1.77116614802584,10.0602710465355,1,H);
+% IGSLAG_vec  =   betarnd(13.365,16.5009217877095,1,H);
+% ILAGE_vec  =   betarnd(333.88212714256,36.7274045952133,1,H);
+% KAPPAE_vec  =   gamrnd(18.7634597430808,0.102454452767374,1,H);
+% RHOCE_vec  =   betarnd(81.3292104751508,7.61349564378053,1,H);
+% RHOETA_vec  =   betarnd(1.68669468122152,13.7169097134955,1,H);
+% RHOETAM_vec  =   betarnd(149.482871932629,6.92904805547293,1,H);
+% RHOETAX_vec  =   betarnd(27.0550083713561,6.30916522755388,1,H);
+% RHOGE_vec  =   betarnd(5.9456293913,13.9860816087,1,H);
+% RHOIG_vec  =   betarnd(15.9853198285919,2.75479720375499,1,H);
+% RHOLE_vec  =   betarnd(93.0308739765042,2.38540702503857,1,H);
+% RHOL0_vec  =   betarnd(163.236723064735,11.6472742191037,1,H);
+% RHOPCPM_vec  =   betarnd(6.79701820447584,3.42098871746619,1,H);
+% RHOPWPX_vec  =   betarnd(7.55065652002992,27.4222778015538,1,H);
+% RHORPE_vec  =   betarnd(143.276939711565,2.30011750400604,1,H);
+% RHORPK_vec  =   betarnd(130.420074851259,12.1466882130819,1,H);
+% RHOUCAP0_vec  =   betarnd(124.150243398439,6.30078465498012,1,H);
+% RPREME_vec  =   betarnd(7.13850986121256,349.786983199416,1,H);
+% RPREMK_vec  =   betarnd(86.5944164201183,3447.87155991124,1,H);
+% SE_vec  =   betarnd(270.226910453978,44.4294827155352,1,H);
+% SFPE_vec  =   betarnd(29.5031576539166,4.35403497164756,1,H);
+% SFPME_vec  =   betarnd(8.76171924619187,3.14117335833451,1,H);
+% SFPXE_vec  =   betarnd(29.9690857153074,2.67697715539782,1,H);
+% SFWE_vec  =   betarnd(4.75838075897478,1.39257678882095,1,H);
+% SIGC_vec  =   gamrnd(25.3852365844692,0.16136150578585,1,H);
+% SIGEXE_vec  =   gamrnd(62.795719140625,0.0403817335752031,1,H);
+% SIGIME_vec  =   gamrnd(30.126530741068,0.0389158648925282,1,H);
+% SLC_vec  =   betarnd(13.6959979217823,25.3573180798781,1,H);
+% RHOTR_vec  =   betarnd(54.6695232771421,8.63469543191545,1,H);
+% TYE1_vec  =   betarnd(7.60691935607018,10.1912073544356,1,H);
+% TYE2_vec  =   betarnd(7.28637478137341,85.7707744060264,1,H);
+% WRLAG_vec  =   betarnd(2.72512582214576,7.54673931975307,1,H);
+
 
 
 % Run the simulations
@@ -136,11 +186,11 @@ res_fm=nan(n,H);
 res_fm2=nan(n,H);
 for h=1:H
     % We modify the parameters values with the i-th draw
-    % Negative posterior mean (Remove it for small H)
-%     set_param_value('G1E',G1E_vec(h));
-%     set_param_value('GSLAG',GSLAG_vec(h)); % Remove it for small H
-%     set_param_value('GVECM',GVECM_vec(h));
-%     set_param_value('IGVECM',IGVECM_vec(h));
+    % Parameters instable (see appendix 1) -> to be updated
+    %set_param_value('G1E',G1E_vec(h));
+    %set_param_value('GSLAG',GSLAG_vec(h)); % Remove it for small H
+    %set_param_value('GVECM',GVECM_vec(h));
+    %set_param_value('IGVECM',IGVECM_vec(h));
 
     % Positive posterior mean
     set_param_value('A2E',A2E_vec(h));
@@ -350,6 +400,7 @@ plot(t_small,fm2_mean(1:horizon),'LineWidth',2); hold on
 xlabel('quarters','FontSize',8);
 title('FM 2nd formula (mean vs. baseline)','FontSize',10);
 
+
 % RIGHT WAY TO PLOT CONFIDENCE INTERVALS
 % figure
 % 
@@ -365,3 +416,9 @@ title('FM 2nd formula (mean vs. baseline)','FontSize',10);
 % xlabel('quarters','FontSize',8);
 % title('FM 2nd formuma','FontSize',10);
 
+% figure 
+% subplot(2,1,1)
+% f_plot_response(t,fm_mean,fm_CI_lower,fm_CI_upper,"FM 1st formula")
+% subplot(2,1,2)
+% f_plot_response(t,fm2_mean,fm2_CI_lower,fm2_CI_upper,"FM 2nd formula")
+% 
