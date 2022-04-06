@@ -33,7 +33,7 @@ RHOEXE RHOGE RHOIG RHOL0 RHOLE  RHOLOL RHOPPI1 RHOPPI2 RHOPPI3 RHOPPI4  RHOPCPM 
 RII  RIP  RIX RPI RPP RPX RXI RXP RXX RXY  RPREME RPREMK SE SFPE SFPME SFPXE SFWE SIGC SIGEXE SIGIME  SLC SSC
 TAUE TP  THETAE TINFE TR1E TRSN RHOTR TYE1 TYE2 TVAT TW0 TW1 UCAP0 WRLAG ZETE interestq_exog inflationannual_exog;
 
-//estimated parameters (mean posterior distribution) (See Table 1)
+// estimated parameters (mean posterior distribution) (See Table 1)
 A2E        =   0.0453;
 G1E        =   -0.0754; 
 GAMIE      =   76.0366;
@@ -608,6 +608,8 @@ var E_EPS_EX;
 stderr  0.0044; 
 var  E_EPS_G;
 stderr  0.0048;
+//periods 1; % Try smth
+//values 1; % Try smth
 var E_EPS_IG;
 stderr 0.0056;
 var E_EPS_L;
@@ -629,9 +631,9 @@ stderr 0.0121;
 
 end;
 
-//steady;
-//check;
+steady;
+check;
  
-stoch_simul (order=1, irf = 40, ar=0, periods=0, nograph, noprint, irf_shocks=(E_EPS_G,E_EPS_IG)) E_INOM E_PHIC E_LYGAP E_PHI E_GY E_GC E_GI E_GCNLC E_GCLC E_TBYN E_GG E_GIG E_GTR E_GL E_GWRY E_DBGYN E_R E_GE E_GTFP;
+stoch_simul (order=1, irf = 40, ar=0, periods=0, nograph, noprint, irf_shocks=(E_EPS_G,E_EPS_IG)) E_LIGSN E_GSN E_LGSN E_INOM E_PHIC E_LYGAP E_PHI E_GY E_GC E_GI E_GCNLC E_GCLC E_TBYN E_GG E_GIG E_GTR E_GL E_GWRY E_DBGYN E_R E_GE E_GTFP;
 //stoch_simul inflation interest outputgap;
 //stoch_simul(order=1) E_INOM E_PHIC E_LYGAP E_GY E_GTR E_GL;

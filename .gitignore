@@ -97,3 +97,36 @@ References/Literature/Ratto et al. 2008 - Appendix 3.doc
 References/Literature/Ratto et al. 2008 - Appendix 4.doc
 References/Literature/Ratto et al. 2008 - Appendix 5.doc
 References/Literature/Ratto et al. 2008 - Appendix 6.doc
+EA_QUEST3/EA_QUEST3_rep/EA_Quest3_rep_perfect_foresight/Output/EA_Quest3_rep_perfect_foresight_results.mat
+EA_QUEST3/EA_QUEST3_rep/EA_Quest3_rep_perfect_foresight/checksum
+EA_QUEST3/EA_QUEST3_rep/EA_QUEST3_rep_perfect_foresight.mod
+EA_QUEST3/EA_QUEST3_rep/EA_Quest3_rep_perfect_foresight.log
+EA_QUEST3/EA_QUEST3_rep/EA_QUEST3_rep.mod
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_resid_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_resid_g1_g2_g3.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_resid_g1_g2.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_resid_g1.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_resid.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g3_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g3.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g2_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g2.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g1_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static_g1.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/static.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/set_auxiliary_variables.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_set_auxiliary_series.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_resid_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_resid_g1_g2_g3.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_resid_g1_g2.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_resid_g1.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_resid.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g3_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g3.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g2_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g2.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g1_tt.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g1_nz.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic_g1.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/dynamic.m
+EA_QUEST3/EA_QUEST3_rep/+EA_Quest3_rep_perfect_foresight/driver.m
