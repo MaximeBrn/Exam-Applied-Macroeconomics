@@ -3,7 +3,7 @@
 
 % EA_QUEST3 model
 
-s = 10; % enter a seed (for random draws)
+s = 80; % enter a seed (for random draws)
 clc;
 close all;
 
@@ -19,41 +19,41 @@ cd([cd '/EA_QUEST3_rep']);
     % We replicate what is done in the paper
 dynare EA_Quest3_rep.mod
 
-% Store reponses to a government consumption shock (E_EPS_G)
-    % We call the response baseline
-    % Therefore baseline responses = paper responses
-   
-GY0_vec = ones(1, length(E_GY_E_EPS_G))' * GY0;
+% % Store reponses to a government consumption shock (E_EPS_G)
+%     % We call the response baseline
+%     % Therefore baseline responses = paper responses
+%    
+% GY0_vec = ones(1, length(E_GY_E_EPS_G))' * GY0;
+% 
+% Y_baseline=cumprod(1+E_GY_E_EPS_G+GY0)-cumprod(1+GY0_vec);% Response Output
+% Infl_baseline = E_PHI_E_EPS_G; % Response Inflation
+% G_baseline =cumprod(1+E_GG_E_EPS_G+GY0)-cumprod(1+GY0_vec); % Response Gov. consumption
+% 
+% % Store the fiscal multipliers
+%     % We should recover the 0.73 for Q1 and 0.45 for Q4 (period multiplier)
+%     % We should recover 0.58 for Q4 (cumulative multiplier)
+% 
+% fm_baseline=Y_baseline./G_baseline/GSN; % period multiplier
+% FM_baseline=cumsum(Y_baseline)./cumsum(G_baseline)/GSN; % cumulative multiplier
+%     % Check
+%     fm_baseline(1);
+%     fm_baseline(4);
+%     FM_baseline(1);
+%     FM_baseline(4);
 
-Y_baseline=cumprod(1+E_GY_E_EPS_G+GY0)-cumprod(1+GY0_vec);% Response Output
-Infl_baseline = E_PHI_E_EPS_G; % Response Inflation
-G_baseline =cumprod(1+E_GG_E_EPS_G+GY0)-cumprod(1+GY0_vec); % Response Gov. consumption
-
-% Store the fiscal multipliers
-    % We should recover the 0.73 for Q1 and 0.45 for Q4 (period multiplier)
-    % We should recover 0.58 for Q4 (cumulative multiplier)
-
-fm_baseline=Y_baseline./G_baseline/GSN; % period multiplier
-FM_baseline=cumsum(Y_baseline)./cumsum(G_baseline)/GSN; % cumulative multiplier
-    % Check
-    fm_baseline(1);
-    fm_baseline(4);
-    FM_baseline(1);
-    FM_baseline(4);
-
-% Plot the fiscal multipliers
-
-t = 1:1:length(Y_baseline); % x-axis
-
-figure('Name','Period and cumulative government consumption multipliers')
-subplot(2,1,1) % Period multiplier
-plot(t,fm_baseline,'LineWidth',2);
-xlabel('quarters','FontSize',8);
-title('Government consumption period multiplier','FontSize',10);
-subplot(2,1,2) % 2nd formula
-plot(t,FM_baseline,'LineWidth',2);
-xlabel('quarters','FontSize',8);
-title('Government consumption cumulative multiplier','FontSize',10);
+% % Plot the fiscal multipliers
+% 
+% t = 1:1:length(Y_baseline); % x-axis
+% 
+% figure('Name','Period and cumulative government consumption multipliers')
+% subplot(2,1,1) % Period multiplier
+% plot(t,fm_baseline,'LineWidth',2);
+% xlabel('quarters','FontSize',8);
+% title('Government consumption period multiplier','FontSize',10);
+% subplot(2,1,2) % 2nd formula
+% plot(t,FM_baseline,'LineWidth',2);
+% xlabel('quarters','FontSize',8);
+% title('Government consumption cumulative multiplier','FontSize',10);
 
 %% Reponse with uncertainty bounds
     % For each parameter, we draw a value
@@ -242,47 +242,14 @@ t = 1:1:n; % x-axis
 
 figure ('Name','Response to a transitory gov. consumption shock')
 subplot(3,1,1) % Output growth
-plot(t,Y_mean,'LineWidth',2); hold on
-plot(t,Y_CI_lower,'LineWidth',2); hold on
-plot(t,Y_CI_upper,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$(Y_t-Y_t^{SS})/Y_t^{SS}$$','interpreter','latex','FontSize',10);
+f_plot_with_CI(t,Y_mean,Y_CI_lower,Y_CI_upper,"$$(Y_t-Y_t^{SS})/Y_t^{SS}$$","Latex")
 
 subplot(3,1,2) % Inflation
-plot(t,Infl_mean,'LineWidth',2); hold on
-plot(t,Infl_CI_lower,'LineWidth',2); hold on
-plot(t,Infl_CI_upper,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$\pi_t- \pi_t^{SS}$$','interpreter','latex','FontSize',10);
+f_plot_with_CI(t,Infl_mean,Infl_CI_lower,Infl_CI_upper,"$$\pi_t- \pi_t^{SS}$$","Latex")
 
 subplot(3,1,3) % Government consumption growth
-plot(t,G_mean,'LineWidth',2); hold on
-plot(t,G_CI_lower,'LineWidth',2); hold on
-plot(t,G_CI_upper,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$(G_t-G_t^{SS})/G_t^{SS}$$','interpreter','latex','FontSize',10);
+f_plot_with_CI(t,G_mean,G_CI_lower,G_CI_upper,"$$(G_t-G_t^{SS})/G_t^{SS}$$","Latex")
 
-
-% Compare the mean of the simulations with the baseline response
-
-figure('Name','Response at the posterior mean vs. response at the mean of the simulations')
-subplot(3,1,1) % Output growth (mean vs. baseline)
-plot(t,Y_baseline,'LineWidth',2); hold on
-plot(t,Y_mean,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$(Y_t-Y_t^{SS})/Y_t^{SS}$$ (mean vs. baseline)','interpreter','latex','FontSize',10);
-
-subplot(3,1,2) % Inflation (mean vs. baseline)
-plot(t,Infl_baseline,'LineWidth',2); hold on
-plot(t,Infl_mean,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$\pi_t- \pi_t^{SS}$$ (mean vs. baseline)','interpreter','latex','FontSize',10);
-
-subplot(3,1,3) % Government consumption growth (mean vs. baseline)
-plot(t,Infl_baseline,'LineWidth',2); hold on
-plot(t,Infl_mean,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('$$(G_t-G_t^{SS})/G_t^{SS}$$ (mean vs. baseline)','interpreter','latex','FontSize',10);
 
 %% Plot fiscal multiplier responses
 
@@ -293,33 +260,12 @@ t = 1:1:n; % x-axis
 
 figure ('Name','Fiscal multipliers to a transitory gov. consumption shock')
 
-subplot(2,2,1) % period multiplier
-plot(t,fm_mean,'LineWidth',2); hold on
-plot(t,fm_CI_lower,'LineWidth',2); hold on
-plot(t,fm_CI_upper,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Period multiplier','FontSize',10);
+subplot(2,1,1) % period multiplier
+f_plot_with_CI(t,fm_mean,fm_CI_lower,fm_CI_upper,"Period gov. consumption multiplier","none")
 
-subplot(2,2,2) % cumulative multiplier
-plot(t,FM_mean,'LineWidth',2); hold on
-plot(t,FM_CI_lower,'LineWidth',2); hold on
-plot(t,FM_CI_upper,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Cumulative multiplier','FontSize',10);
 
-% Add comparison with baseline
-
-subplot(2,2,3) % period multiplier (mean vs. baseline)
-plot(t,fm_baseline,'LineWidth',2); hold on
-plot(t,fm_mean,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Period multiplier (mean vs. baseline)','FontSize',10);
-
-subplot(2,2,4) % cumulative multiplier 
-plot(t,FM_baseline,'LineWidth',2); hold on
-plot(t,FM_mean,'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Cumulative multiplier (mean vs. baseline)','FontSize',10);
+subplot(2,1,2) % cumulative multiplier
+f_plot_with_CI(t,FM_mean,FM_CI_lower,FM_CI_upper,"Cumulative gov. consumption multiplier","none")
 
 % Same plots with a shorter time-horizon
 
@@ -327,51 +273,8 @@ horizon=30;
 t_small=t(1:horizon);
 
 figure
-subplot(2,2,1)
-plot(t_small,fm_mean(1:horizon),'LineWidth',2); hold on
-plot(t_small,fm_CI_lower(1:horizon),'LineWidth',2); hold on
-plot(t_small,fm_CI_upper(1:horizon),'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Period multiplier','FontSize',10);
+subplot(2,1,1)
+f_plot_with_CI(t_small,fm_mean(1:horizon),fm_CI_lower(1:horizon),fm_CI_upper(1:horizon),"Period gov. consumption multiplier","none")
 
-subplot(2,2,2)
-plot(t_small,FM_mean(1:horizon),'LineWidth',2); hold on
-plot(t_small,FM_CI_lower(1:horizon),'LineWidth',2); hold on
-plot(t_small,FM_CI_upper(1:horizon),'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Cumulative multiplier','FontSize',10);
-
-subplot(2,2,3)
-plot(t_small,fm_baseline(1:horizon),'LineWidth',2); hold on
-plot(t_small,fm_mean(1:horizon),'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Period multiplier (mean vs. baseline)','FontSize',10);
-
-subplot(2,2,4)
-plot(t_small,FM_baseline(1:horizon),'LineWidth',2); hold on
-plot(t_small,FM_mean(1:horizon),'LineWidth',2); hold on
-xlabel('quarters','FontSize',8);
-title('Cumulative multiplier (mean vs. baseline)','FontSize',10);
-
-
-% RIGHT WAY TO PLOT CONFIDENCE INTERVALS
-% figure
-% 
-% subplot(2,2,1) % fiscal multiplier 1st formula
-% plot(t,fm_mean,'LineWidth',2); hold on
-% fill([t fliplr(t)], [fm_CI_lower' flipud(fm_CI_upper)'], 1,'facecolor', 'red', 'edgecolor', 'none', 'facealpha', 0.4); hold on
-% xlabel('quarters','FontSize',8);
-% title('FM 1st formula','FontSize',10);
-% 
-% subplot(2,2,2) % fiscal multiplier 2nd formula
-% plot(t,fm2_mean,'LineWidth',2); hold on
-% fill([t fliplr(t)], [fm2_CI_lower' flipud(fm2_CI_upper)'], 1,'facecolor', 'red', 'edgecolor', 'none', 'facealpha', 0.4); hold on
-% xlabel('quarters','FontSize',8);
-% title('FM 2nd formuma','FontSize',10);
-
-% figure 
-% subplot(2,1,1)
-% f_plot_response(t,fm_mean,fm_CI_lower,fm_CI_upper,"FM 1st formula")
-% subplot(2,1,2)
-% f_plot_response(t,fm2_mean,fm2_CI_lower,fm2_CI_upper,"FM 2nd formula")
-% 
+subplot(2,1,2)
+f_plot_with_CI(t_small,FM_mean(1:horizon),FM_CI_lower(1:horizon),FM_CI_upper(1:horizon),"Cumulative gov. consumption multiplier","none")
