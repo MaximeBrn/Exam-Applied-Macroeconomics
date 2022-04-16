@@ -3,7 +3,7 @@
 
 % EA_QUEST3 model
 
-s = 80; % enter a seed (for random draws)
+s = 10; % enter a seed (for random draws)
 clc;
 close all;
 
@@ -64,7 +64,7 @@ dynare EA_Quest3_rep.mod
     % We obtain several responses to shocks
     % We can a Bayesian confidence interval around the mean response
 
-H=200; % Set the number of the simulations
+H=400; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -125,7 +125,8 @@ WRLAG_vec  =   normrnd(0.2653,0.1315,1,H);
 
 % Run the simulations
 
-n=length(Y_baseline); % Lenght of the response vector (i.e # of quarters)
+n=length(E_GY_E_EPS_G); % Lenght of the response vector (i.e # of quarters)
+GY0_vec = ones(1, n)' * GY0; % to be used in the fiscal multiplier formulas 
 
 % Empty results matrix
     % Results will be store as follow:
@@ -206,27 +207,27 @@ end
     % So, i-th raw mean(matrix,2) = mean response value at the i-th quarter
     % Idem for quantiles(matrix,p,2)
 
-% Output response (simulations)
+% Output response (simulation output)
 Y_mean=mean(res_Y,2);
 Y_CI_lower=quantile(res_Y,0.05,2); 
 Y_CI_upper=quantile(res_Y,0.95,2);
 
-% Inflation response (simulations)
+% Inflation response (simulation output)
 Infl_mean=mean(res_Infl,2);
 Infl_CI_lower=quantile(res_Infl,0.05,2); 
 Infl_CI_upper=quantile(res_Infl,0.95,2);
 
-% government consumption responses (simulations)
+% government consumption responses (simulation output)
 G_mean=mean(res_G,2);
 G_CI_lower=quantile(res_G,0.05,2); 
 G_CI_upper=quantile(res_G,0.95,2);
 
-% Period multiplier (simulations)
+% Period multiplier (simulation output)
 fm_mean=mean(res_fm,2);
 fm_CI_lower=quantile(res_fm,0.05,2); 
 fm_CI_upper=quantile(res_fm,0.95,2);
 
-% Cumulative multiplier (simulations)
+% Cumulative multiplier (simulation output)
 FM_mean=mean(res_FM,2);
 FM_CI_lower=quantile(res_FM,0.05,2); 
 FM_CI_upper=quantile(res_FM,0.95,2);

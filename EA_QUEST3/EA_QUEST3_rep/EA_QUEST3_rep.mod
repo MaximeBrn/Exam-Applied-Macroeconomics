@@ -608,8 +608,6 @@ var E_EPS_EX;
 stderr  0.0044; 
 var  E_EPS_G;
 stderr  0.0048;
-//periods 1; % Try smth
-//values 1; % Try smth
 var E_EPS_IG;
 stderr 0.0056;
 var E_EPS_L;
