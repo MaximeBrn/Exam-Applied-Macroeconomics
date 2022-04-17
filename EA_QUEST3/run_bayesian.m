@@ -3,7 +3,7 @@
 
 % EA_QUEST3 model
 
-s = 10; % enter a seed (for random draws)
+s = 0; % enter a seed (for random draws)
 clc;
 close all;
 
@@ -11,49 +11,10 @@ close all;
 % Adjust path to folder where replication file is stored
 cd([cd '/EA_QUEST3_rep']);
 
-
-%% Replication of the paper results
-
 % Run the .mod file for the first time
     % Parameters value = posterior mean
     % We replicate what is done in the paper
 dynare EA_Quest3_rep.mod
-
-% % Store reponses to a government consumption shock (E_EPS_G)
-%     % We call the response baseline
-%     % Therefore baseline responses = paper responses
-%    
-% GY0_vec = ones(1, length(E_GY_E_EPS_G))' * GY0;
-% 
-% Y_baseline=cumprod(1+E_GY_E_EPS_G+GY0)-cumprod(1+GY0_vec);% Response Output
-% Infl_baseline = E_PHI_E_EPS_G; % Response Inflation
-% G_baseline =cumprod(1+E_GG_E_EPS_G+GY0)-cumprod(1+GY0_vec); % Response Gov. consumption
-% 
-% % Store the fiscal multipliers
-%     % We should recover the 0.73 for Q1 and 0.45 for Q4 (period multiplier)
-%     % We should recover 0.58 for Q4 (cumulative multiplier)
-% 
-% fm_baseline=Y_baseline./G_baseline/GSN; % period multiplier
-% FM_baseline=cumsum(Y_baseline)./cumsum(G_baseline)/GSN; % cumulative multiplier
-%     % Check
-%     fm_baseline(1);
-%     fm_baseline(4);
-%     FM_baseline(1);
-%     FM_baseline(4);
-
-% % Plot the fiscal multipliers
-% 
-% t = 1:1:length(Y_baseline); % x-axis
-% 
-% figure('Name','Period and cumulative government consumption multipliers')
-% subplot(2,1,1) % Period multiplier
-% plot(t,fm_baseline,'LineWidth',2);
-% xlabel('quarters','FontSize',8);
-% title('Government consumption period multiplier','FontSize',10);
-% subplot(2,1,2) % 2nd formula
-% plot(t,FM_baseline,'LineWidth',2);
-% xlabel('quarters','FontSize',8);
-% title('Government consumption cumulative multiplier','FontSize',10);
 
 %% Reponse with uncertainty bounds
     % For each parameter, we draw a value
@@ -64,7 +25,7 @@ dynare EA_Quest3_rep.mod
     % We obtain several responses to shocks
     % We can a Bayesian confidence interval around the mean response
 
-H=400; % Set the number of the simulations
+H=500; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -74,11 +35,11 @@ rng(s); % Specify the seed
         
 % Draw vectors from normal law
 % Instable parameters
-GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
-SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
-SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
-SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
-SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
+% GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
+% SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
+% SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
+% SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
+% SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
 
 % Other parameters
 G1E_vec  =   normrnd(-0.0754,0.1066,1,H);
@@ -154,10 +115,12 @@ for h=1:H
     set_param_value('GAMIE',GAMIE_vec(h));
     set_param_value('GAMI2E',GAMI2E_vec(h));
     set_param_value('GAMLE',GAMLE_vec(h));
+    %set_param_value('GAMLE',0); % Try smth
     set_param_value('GAMPE',GAMPE_vec(h));
     set_param_value('GAMPME',GAMPME_vec(h));
     set_param_value('GAMPXE',GAMPXE_vec(h));
     set_param_value('GAMWE',GAMWE_vec(h));
+    %set_param_value('GAMWE',0); % Try smth
     set_param_value('HABE',HABE_vec(h));
     set_param_value('HABLE',HABLE_vec(h));
     set_param_value('IG1E',IG1E_vec(h));
@@ -243,39 +206,57 @@ t = 1:1:n; % x-axis
 
 figure ('Name','Response to a transitory gov. consumption shock')
 subplot(3,1,1) % Output growth
-f_plot_with_CI(t,Y_mean,Y_CI_lower,Y_CI_upper,"$$(Y_t-Y_t^{SS})/Y_t^{SS}$$","Latex")
+f_plot_with_CI(t,Y_mean,Y_CI_lower,Y_CI_upper,"$$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
 
 subplot(3,1,2) % Inflation
-f_plot_with_CI(t,Infl_mean,Infl_CI_lower,Infl_CI_upper,"$$\pi_t- \pi_t^{SS}$$","Latex")
+f_plot_with_CI(t,Infl_mean,Infl_CI_lower,Infl_CI_upper,"$$\pi_t- \pi_t^{SS}$$","Latex",1)
 
 subplot(3,1,3) % Government consumption growth
-f_plot_with_CI(t,G_mean,G_CI_lower,G_CI_upper,"$$(G_t-G_t^{SS})/G_t^{SS}$$","Latex")
-
+f_plot_with_CI(t,G_mean,G_CI_lower,G_CI_upper,"$$(G_t-G_t^{SS})/G_0^{SS}$$","Latex",1)
+saveas(gcf,'Figure_1','png')
 
 %% Plot fiscal multiplier responses
 
-
-t = 1:1:n; % x-axis
-
-% Plot simulation mean and confidence interval
-
-figure ('Name','Fiscal multipliers to a transitory gov. consumption shock')
-
-subplot(2,1,1) % period multiplier
-f_plot_with_CI(t,fm_mean,fm_CI_lower,fm_CI_upper,"Period gov. consumption multiplier","none")
-
-
-subplot(2,1,2) % cumulative multiplier
-f_plot_with_CI(t,FM_mean,FM_CI_lower,FM_CI_upper,"Cumulative gov. consumption multiplier","none")
-
-% Same plots with a shorter time-horizon
-
-horizon=30;
+horizon=30; % use shorter time horizon to plot fiscal multipliers
 t_small=t(1:horizon);
 
 figure
 subplot(2,1,1)
-f_plot_with_CI(t_small,fm_mean(1:horizon),fm_CI_lower(1:horizon),fm_CI_upper(1:horizon),"Period gov. consumption multiplier","none")
+f_plot_with_CI(t_small,fm_mean(1:horizon),fm_CI_lower(1:horizon),fm_CI_upper(1:horizon),"Period gov. consumption multiplier","none",0)
 
 subplot(2,1,2)
-f_plot_with_CI(t_small,FM_mean(1:horizon),FM_CI_lower(1:horizon),FM_CI_upper(1:horizon),"Cumulative gov. consumption multiplier","none")
+f_plot_with_CI(t_small,FM_mean(1:horizon),FM_CI_lower(1:horizon),FM_CI_upper(1:horizon),"Cumulative gov. consumption multiplier","none",0)
+saveas(gcf,'Figure_2','png')
+
+%% Fiscal multipliers in a table
+
+% Short run
+varname={'5%','Mean','95%'};
+Q1 = table([fm_CI_lower(1);FM_CI_lower(1)],[fm_mean(1);FM_mean(1)],[fm_CI_upper(1);FM_CI_upper(1)], 'VariableNames',varname);
+Q2 = table([fm_CI_lower(2);FM_CI_lower(2)],[fm_mean(2);FM_mean(2)],[fm_CI_upper(2);FM_CI_upper(2)],'VariableNames',varname);
+Q3 = table([fm_CI_lower(3);FM_CI_lower(3)],[fm_mean(3);FM_mean(3)],[fm_CI_upper(3);FM_CI_upper(3)],'VariableNames',varname);
+Q4 = table([fm_CI_lower(4);FM_CI_lower(4)],[fm_mean(4);FM_mean(4)],[fm_CI_upper(4);FM_CI_upper(4)],'VariableNames',varname);
+
+Table_sr=table(Q1,Q2,Q3,Q4,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+
+%long-run 
+Q8 = table([fm_CI_lower(8);FM_CI_lower(8)],[fm_mean(8);FM_mean(8)],[fm_CI_upper(8);FM_CI_upper(8)], 'VariableNames',varname);
+Q12 = table([fm_CI_lower(12);FM_CI_lower(12)],[fm_mean(12);FM_mean(12)],[fm_CI_upper(12);FM_CI_upper(12)],'VariableNames',varname);
+Q16 = table([fm_CI_lower(16);FM_CI_lower(16)],[fm_mean(16);FM_mean(16)],[fm_CI_upper(16);FM_CI_upper(16)],'VariableNames',varname);
+Q20 = table([fm_CI_lower(20);FM_CI_lower(20)],[fm_mean(20);FM_mean(20)],[fm_CI_upper(20);FM_CI_upper(20)],'VariableNames',varname);
+
+Table_lr=table(Q8,Q12,Q16,Q20,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+
+% Store the values in Tables.xlsx
+
+writetable(Q1,'Tables.xlsx','Sheet','SR','Range','C3')
+writetable(Q2,'Tables.xlsx','Sheet','SR','Range','F3')
+writetable(Q3,'Tables.xlsx','Sheet','SR','Range','I3')
+writetable(Q4,'Tables.xlsx','Sheet','SR','Range','L3')
+
+writetable(Q8,'Tables.xlsx','Sheet','LR','Range','C3')
+writetable(Q12,'Tables.xlsx','Sheet','LR','Range','F3')
+writetable(Q16,'Tables.xlsx','Sheet','LR','Range','I3')
+writetable(Q20,'Tables.xlsx','Sheet','LR','Range','L3')
+
+
