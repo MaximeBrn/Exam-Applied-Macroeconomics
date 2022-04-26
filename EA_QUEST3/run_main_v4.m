@@ -3,7 +3,7 @@
 %-------------------------------------------------------------------------%
 
 %% Initialize
-s = 50; % enter a seed (for random draws)
+s = 0; % enter a seed (for random draws)
 clc;
 close all;
 
@@ -22,9 +22,9 @@ dynare EA_Quest3_rep.mod
     % See Excel File : randomize paramaters
     % We can simulate the .mod file for each vector of parameters value
     % We obtain several responses to shocks
-    % We can a Bayesian confidence interval around the mean response
+    % We can a Bayesian confidence interval around the median response
 
-H=500; % Set the number of the simulations
+H=300; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -34,11 +34,11 @@ rng(s); % Specify the seed
         
 % Draw vectors from normal law
 % Instable parameters
-GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
-SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
-SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
-SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
-SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
+% GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
+% SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
+% SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
+% SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
+% SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
 
 % Other parameters
 G1E_vec  =   normrnd(-0.0754,0.1066,1,H);
@@ -106,21 +106,15 @@ res_IG_GI=nan(n,H);
 res_fm_GI=nan(n,H);
 res_FM_GI=nan(n,H);
 
-% Responses to government transfer shock
-res_Y_TR=nan(n,H);
-res_Infl_TR=nan(n,H);
-res_TR_TR=nan(n,H);
-res_fm_TR=nan(n,H);
-res_FM_TR=nan(n,H);
 
 for h=1:H
     % We modify the parameters values with the i-th draw
     % Instable parameters (see appendix 2) (remove for small H)
-    set_param_value('GSLAG',GSLAG_vec(h));
-    set_param_value('SFPE',SFPE_vec(h));
-    set_param_value('SFPXE',SFPXE_vec(h));
-    set_param_value('SFWE',SFWE_vec(h));
-    set_param_value('SIGEXE',SIGEXE_vec(h));
+%     set_param_value('GSLAG',GSLAG_vec(h));
+%     set_param_value('SFPE',SFPE_vec(h));
+%     set_param_value('SFPXE',SFPXE_vec(h));
+%     set_param_value('SFWE',SFWE_vec(h));
+%     set_param_value('SIGEXE',SIGEXE_vec(h));
   
     % Other parameters
     set_param_value('G1E',G1E_vec(h));
@@ -177,7 +171,7 @@ for h=1:H
     res_fm_G(:,h)=res_Y_G(:,h)./res_G_G(:,h)/GSN; % Response period multiplier
     res_FM_G(:,h)=cumsum(res_Y_G(:,h))./cumsum(res_G_G(:,h))/GSN; % Response cumulative multiplier
     
-    % IRF to gov. consumption shock
+    % IRF to gov. investment shock
     res_Y_GI(:,h)=cumprod(1+E_GY_E_EPS_IG+GY0)-cumprod(1+GY0_vec); % Response Output
     res_Infl_GI(:,h)=E_PHI_E_EPS_IG; % Response Inflation
     res_IG_GI(:,h)=cumprod(1+E_GIG_E_EPS_IG+GY0)-cumprod(1+GY0_vec); % Response Gov. investment
@@ -186,43 +180,54 @@ for h=1:H
 
 end
 
-%% Compute mean and confidence intervals based on the H simulations
-    % Note:
-    % mean(matrix,2) -> sum over the raws
-    % So, i-th raw mean(matrix,2) = mean response value at the i-th quarter
-    % Idem for quantiles(matrix,p,2)
+%% Compute median and confidence intervals based on the H simulations
 
 % Get confidence interval --> IRF to governement consumption shock
-[Y_G_mean,Y_G_CI_lower,Y_G_CI_upper]=get_CI(res_Y_G); % Output IRFs
-[Infl_G_mean,Infl_G_CI_lower,Infl_G_CI_upper]=get_CI(res_Infl_G); % Inflation IRF
-[G_G_mean,G_G_CI_lower,G_G_CI_upper]=get_CI(res_G_G); % Gov. consumption IRF
-[fm_G_mean,fm_G_CI_lower,fm_G_CI_upper]=get_CI(res_fm_G); % Period multiplier
-[FM_G_mean,FM_G_CI_lower,FM_G_CI_upper]=get_CI(res_FM_G); % Cumulative multiplier
+[Y_G_median,Y_G_CI_lower,Y_G_CI_upper]=get_CI(res_Y_G); % Output IRFs
+[Infl_G_median,Infl_G_CI_lower,Infl_G_CI_upper]=get_CI(res_Infl_G); % Inflation IRF
+[G_G_median,G_G_CI_lower,G_G_CI_upper]=get_CI(res_G_G); % Gov. consumption IRF
+[fm_G_median,fm_G_CI_lower,fm_G_CI_upper]=get_CI(res_fm_G); % Period multiplier
+[FM_G_median,FM_G_CI_lower,FM_G_CI_upper]=get_CI(res_FM_G); % Cumulative multiplier
+
+% fm_G_median=Y_G_median./G_G_median./GSN;
+% fm_G_CI_lower=Y_G_CI_lower./G_G_CI_lower./GSN;
+% fm_G_CI_upper=Y_G_CI_upper./G_G_CI_upper./GSN;
+
+% FM_G_median=cumsum(Y_G_median)./cumsum(G_G_median)./GSN;
+% FM_G_CI_lower=cumsum(Y_G_CI_lower)./cumsum(G_G_CI_lower)./GSN;
+% FM_G_CI_upper=cumsum(Y_G_CI_upper)./cumsum(G_G_CI_upper)./GSN;
 
 % Get confidence interval --> IRF to governement investment shock
-[Y_GI_mean,Y_GI_CI_lower,Y_GI_CI_upper]=get_CI(res_Y_GI); % Output IRFs
-[Infl_GI_mean,Infl_GI_CI_lower,Infl_GI_CI_upper]=get_CI(res_Infl_GI); % Inflation IRF
-[IG_GI_mean,IG_GI_CI_lower,IG_GI_CI_upper]=get_CI(res_IG_GI); % Gov. investment IRF
-[fm_GI_mean,fm_GI_CI_lower,fm_GI_CI_upper]=get_CI(res_fm_GI); % Period multiplier
-[FM_GI_mean,FM_GI_CI_lower,FM_GI_CI_upper]=get_CI(res_FM_GI); % Cumulative multiplier
+[Y_GI_median,Y_GI_CI_lower,Y_GI_CI_upper]=get_CI(res_Y_GI); % Output IRFs
+[Infl_GI_median,Infl_GI_CI_lower,Infl_GI_CI_upper]=get_CI(res_Infl_GI); % Inflation IRF
+[IG_GI_median,IG_GI_CI_lower,IG_GI_CI_upper]=get_CI(res_IG_GI); % Gov. investment IRF
+[fm_GI_median,fm_GI_CI_lower,fm_GI_CI_upper]=get_CI(res_fm_GI); % Period multiplier
+[FM_GI_median,FM_GI_CI_lower,FM_GI_CI_upper]=get_CI(res_FM_GI); % Cumulative multiplier
 
+% fm_GI_median=Y_GI_median./IG_GI_median./IGSN;
+% fm_GI_CI_lower=Y_GI_CI_lower./IG_GI_CI_lower./IGSN;
+% fm_GI_CI_upper=Y_GI_CI_upper./IG_GI_CI_upper./IGSN;
+% 
+% FM_GI_median=cumsum(Y_GI_median)./cumsum(IG_GI_median)./IGSN;
+% FM_GI_CI_lower=cumsum(Y_GI_CI_lower)./cumsum(IG_GI_CI_lower)./IGSN;
+% FM_GI_CI_upper=cumsum(Y_GI_CI_upper)./cumsum(IG_GI_CI_upper)./IGSN;
 
 %% Build Figure 1, Figure 2, Table 1, Table 2 -> Consumption shock
 
 t = 1:1:n; % x-axis
 
-% Plot simulation mean and confidence interval
+% Plot simulation median and confidence interval
     % It should look like the paper IRF
 
 figure ('Name','Response to a transitory gov. consumption shock')
 subplot(3,1,1) % Output
-f_plot_with_CI(t,Y_G_mean,Y_G_CI_lower,Y_G_CI_upper,"Output response : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,Y_G_median,Y_G_CI_lower,Y_G_CI_upper,"Output response : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
 
 subplot(3,1,2) % Inflation
-f_plot_with_CI(t,Infl_G_mean,Infl_G_CI_lower,Infl_G_CI_upper,"Inflation response : $$\pi_t- \pi_t^{SS}$$","Latex",1)
+f_plot_with_CI(t,Infl_G_median,Infl_G_CI_lower,Infl_G_CI_upper,"Inflation response : $$\pi_t- \pi_t^{SS}$$","Latex",1)
 
 subplot(3,1,3) % Government consumption
-f_plot_with_CI(t,G_G_mean,G_G_CI_lower,G_G_CI_upper,"Gov. consumption response : $$(G_t-G_t^{SS})/G_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,G_G_median,G_G_CI_lower,G_G_CI_upper,"Gov. consumption response : $$(G_t-G_t^{SS})/G_0^{SS}$$","Latex",1)
 saveas(gcf,'Figure_1_IRF_cons','png')
 
 % Plot fiscal multipliers
@@ -232,30 +237,30 @@ t_small=t(1:horizon);
 
 figure ('Name','Gov. consumption fiscal multipliers')
 subplot(2,1,1)
-f_plot_with_CI(t_small,fm_G_mean(1:horizon),fm_G_CI_lower(1:horizon),fm_G_CI_upper(1:horizon),"Period gov. consumption multiplier : $$fm_t$$","Latex",0)
+f_plot_with_CI(t_small,fm_G_median(1:horizon),fm_G_CI_lower(1:horizon),fm_G_CI_upper(1:horizon),"Period gov. consumption multiplier : $$fm_t$$","Latex",0)
 
 subplot(2,1,2)
-f_plot_with_CI(t_small,FM_G_mean(1:horizon),FM_G_CI_lower(1:horizon),FM_G_CI_upper(1:horizon),"Cumulative gov. consumption multiplier : $$FM_t$$","Latex",0)
+f_plot_with_CI(t_small,FM_G_median(1:horizon),FM_G_CI_lower(1:horizon),FM_G_CI_upper(1:horizon),"Cumulative gov. consumption multiplier : $$FM_t$$","Latex",0)
 saveas(gcf,'Figure_2_multipliers_cons','png')
 
 % Fiscal multipliers in a table
 
 % Short run
-varname={'5%','Mean','95%'};
-Q1_G = table([fm_G_CI_lower(1);FM_G_CI_lower(1)],[fm_G_mean(1);FM_G_mean(1)],[fm_G_CI_upper(1);FM_G_CI_upper(1)], 'VariableNames',varname);
-Q2_G = table([fm_G_CI_lower(2);FM_G_CI_lower(2)],[fm_G_mean(2);FM_G_mean(2)],[fm_G_CI_upper(2);FM_G_CI_upper(2)],'VariableNames',varname);
-Q3_G = table([fm_G_CI_lower(3);FM_G_CI_lower(3)],[fm_G_mean(3);FM_G_mean(3)],[fm_G_CI_upper(3);FM_G_CI_upper(3)],'VariableNames',varname);
-Q4_G = table([fm_G_CI_lower(4);FM_G_CI_lower(4)],[fm_G_mean(4);FM_G_mean(4)],[fm_G_CI_upper(4);FM_G_CI_upper(4)],'VariableNames',varname);
+varname={'5%','Median','95%'};
+Q1_G = table([fm_G_CI_lower(1);FM_G_CI_lower(1)],[fm_G_median(1);FM_G_median(1)],[fm_G_CI_upper(1);FM_G_CI_upper(1)], 'VariableNames',varname);
+Q2_G = table([fm_G_CI_lower(2);FM_G_CI_lower(2)],[fm_G_median(2);FM_G_median(2)],[fm_G_CI_upper(2);FM_G_CI_upper(2)],'VariableNames',varname);
+Q3_G = table([fm_G_CI_lower(3);FM_G_CI_lower(3)],[fm_G_median(3);FM_G_median(3)],[fm_G_CI_upper(3);FM_G_CI_upper(3)],'VariableNames',varname);
+Q4_G = table([fm_G_CI_lower(4);FM_G_CI_lower(4)],[fm_G_median(4);FM_G_median(4)],[fm_G_CI_upper(4);FM_G_CI_upper(4)],'VariableNames',varname);
 
-Table_sr_G=table(Q1_G,Q2_G,Q3_G,Q4_G,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_1=table(Q1_G,Q2_G,Q3_G,Q4_G,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 %long-run 
-Q8_G = table([fm_G_CI_lower(8);FM_G_CI_lower(8)],[fm_G_mean(8);FM_G_mean(8)],[fm_G_CI_upper(8);FM_G_CI_upper(8)], 'VariableNames',varname);
-Q12_G = table([fm_G_CI_lower(12);FM_G_CI_lower(12)],[fm_G_mean(12);FM_G_mean(12)],[fm_G_CI_upper(12);FM_G_CI_upper(12)],'VariableNames',varname);
-Q16_G = table([fm_G_CI_lower(16);FM_G_CI_lower(16)],[fm_G_mean(16);FM_G_mean(16)],[fm_G_CI_upper(16);FM_G_CI_upper(16)],'VariableNames',varname);
-Q20_G = table([fm_G_CI_lower(20);FM_G_CI_lower(20)],[fm_G_mean(20);FM_G_mean(20)],[fm_G_CI_upper(20);FM_G_CI_upper(20)],'VariableNames',varname);
+Q8_G = table([fm_G_CI_lower(8);FM_G_CI_lower(8)],[fm_G_median(8);FM_G_median(8)],[fm_G_CI_upper(8);FM_G_CI_upper(8)], 'VariableNames',varname);
+Q12_G = table([fm_G_CI_lower(12);FM_G_CI_lower(12)],[fm_G_median(12);FM_G_median(12)],[fm_G_CI_upper(12);FM_G_CI_upper(12)],'VariableNames',varname);
+Q16_G = table([fm_G_CI_lower(16);FM_G_CI_lower(16)],[fm_G_median(16);FM_G_median(16)],[fm_G_CI_upper(16);FM_G_CI_upper(16)],'VariableNames',varname);
+Q20_G = table([fm_G_CI_lower(20);FM_G_CI_lower(20)],[fm_G_median(20);FM_G_median(20)],[fm_G_CI_upper(20);FM_G_CI_upper(20)],'VariableNames',varname);
 
-Table_lr_G=table(Q8,Q12,Q16,Q20,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_2=table(Q8_G,Q12_G,Q16_G,Q20_G,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 % Store the values in Tables.xlsx
 
@@ -273,18 +278,18 @@ writetable(Q20_G,'Tables_12_multipliers.xlsx','Sheet','LR','Range','L3')
 
 t = 1:1:n; % x-axis
 
-% Plot simulation mean and confidence interval
+% Plot simulation median and confidence interval
     % It should look like the paper IRF
 
 figure ('Name','Response to a transitory gov. investment shock')
 subplot(3,1,1) % Output
-f_plot_with_CI(t,Y_GI_mean,Y_GI_CI_lower,Y_GI_CI_upper,"Output response : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,Y_GI_median,Y_GI_CI_lower,Y_GI_CI_upper,"Output response : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
 
 subplot(3,1,2) % Inflation
-f_plot_with_CI(t,Infl_GI_mean,Infl_GI_CI_lower,Infl_GI_CI_upper,"Inflation response : $$\pi_t- \pi_t^{SS}$$","Latex",1)
+f_plot_with_CI(t,Infl_GI_median,Infl_GI_CI_lower,Infl_GI_CI_upper,"Inflation response : $$\pi_t- \pi_t^{SS}$$","Latex",1)
 
 subplot(3,1,3) % Government investment
-f_plot_with_CI(t,IG_GI_mean,IG_GI_CI_lower,IG_GI_CI_upper,"Gov. investment response : $$(GI_t-GI_t^{SS})/GI_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,IG_GI_median,IG_GI_CI_lower,IG_GI_CI_upper,"Gov. investment response : $$(GI_t-GI_t^{SS})/GI_0^{SS}$$","Latex",1)
 saveas(gcf,'Figure_5_IRF_inv','png')
 
 % Plot fiscal multipliers
@@ -294,30 +299,30 @@ t_small=t(1:horizon);
 
 figure ('Name','Gov. investment fiscal multipliers')
 subplot(2,1,1)
-f_plot_with_CI(t_small,fm_GI_mean(1:horizon),fm_GI_CI_lower(1:horizon),fm_GI_CI_upper(1:horizon),"Period gov. investment multiplier : $$fm_t$$","Latex",0)
+f_plot_with_CI(t_small,fm_GI_median(1:horizon),fm_GI_CI_lower(1:horizon),fm_GI_CI_upper(1:horizon),"Period gov. investment multiplier : $$fm_t$$","Latex",0)
 
 subplot(2,1,2)
-f_plot_with_CI(t_small,FM_GI_mean(1:horizon),FM_GI_CI_lower(1:horizon),FM_GI_CI_upper(1:horizon),"Cumulative gov. investment multiplier : $$FM_t$$","Latex",0)
+f_plot_with_CI(t_small,FM_GI_median(1:horizon),FM_GI_CI_lower(1:horizon),FM_GI_CI_upper(1:horizon),"Cumulative gov. investment multiplier : $$FM_t$$","Latex",0)
 saveas(gcf,'Figure_6_multipliers_inv','png')
 
 % Fiscal multipliers in a table
 
 % Short run
-varname={'5%','Mean','95%'};
-Q1_GI = table([fm_GI_CI_lower(1);FM_GI_CI_lower(1)],[fm_GI_mean(1);FM_GI_mean(1)],[fm_GI_CI_upper(1);FM_GI_CI_upper(1)], 'VariableNames',varname);
-Q2_GI = table([fm_GI_CI_lower(2);FM_GI_CI_lower(2)],[fm_GI_mean(2);FM_GI_mean(2)],[fm_GI_CI_upper(2);FM_GI_CI_upper(2)],'VariableNames',varname);
-Q3_GI = table([fm_GI_CI_lower(3);FM_GI_CI_lower(3)],[fm_GI_mean(3);FM_GI_mean(3)],[fm_GI_CI_upper(3);FM_GI_CI_upper(3)],'VariableNames',varname);
-Q4_GI = table([fm_GI_CI_lower(4);FM_GI_CI_lower(4)],[fm_GI_mean(4);FM_GI_mean(4)],[fm_GI_CI_upper(4);FM_GI_CI_upper(4)],'VariableNames',varname);
+varname={'5%','Median','95%'};
+Q1_GI = table([fm_GI_CI_lower(1);FM_GI_CI_lower(1)],[fm_GI_median(1);FM_GI_median(1)],[fm_GI_CI_upper(1);FM_GI_CI_upper(1)], 'VariableNames',varname);
+Q2_GI = table([fm_GI_CI_lower(2);FM_GI_CI_lower(2)],[fm_GI_median(2);FM_GI_median(2)],[fm_GI_CI_upper(2);FM_GI_CI_upper(2)],'VariableNames',varname);
+Q3_GI = table([fm_GI_CI_lower(3);FM_GI_CI_lower(3)],[fm_GI_median(3);FM_GI_median(3)],[fm_GI_CI_upper(3);FM_GI_CI_upper(3)],'VariableNames',varname);
+Q4_GI = table([fm_GI_CI_lower(4);FM_GI_CI_lower(4)],[fm_GI_median(4);FM_GI_median(4)],[fm_GI_CI_upper(4);FM_GI_CI_upper(4)],'VariableNames',varname);
 
-Table_sr_GI=table(Q1_GI,Q2_GI,Q3_GI,Q4_GI,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_5=table(Q1_GI,Q2_GI,Q3_GI,Q4_GI,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 %long-run 
-Q8_GI = table([fm_GI_CI_lower(8);FM_GI_CI_lower(8)],[fm_GI_mean(8);FM_GI_mean(8)],[fm_GI_CI_upper(8);FM_GI_CI_upper(8)], 'VariableNames',varname);
-Q12_GI = table([fm_GI_CI_lower(12);FM_GI_CI_lower(12)],[fm_GI_mean(12);FM_GI_mean(12)],[fm_GI_CI_upper(12);FM_GI_CI_upper(12)],'VariableNames',varname);
-Q16_GI = table([fm_GI_CI_lower(16);FM_GI_CI_lower(16)],[fm_GI_mean(16);FM_GI_mean(16)],[fm_GI_CI_upper(16);FM_GI_CI_upper(16)],'VariableNames',varname);
-Q20_GI = table([fm_GI_CI_lower(20);FM_GI_CI_lower(20)],[fm_GI_mean(20);FM_GI_mean(20)],[fm_GI_CI_upper(20);FM_GI_CI_upper(20)],'VariableNames',varname);
+Q8_GI = table([fm_GI_CI_lower(8);FM_GI_CI_lower(8)],[fm_GI_median(8);FM_GI_median(8)],[fm_GI_CI_upper(8);FM_GI_CI_upper(8)], 'VariableNames',varname);
+Q12_GI = table([fm_GI_CI_lower(12);FM_GI_CI_lower(12)],[fm_GI_median(12);FM_GI_median(12)],[fm_GI_CI_upper(12);FM_GI_CI_upper(12)],'VariableNames',varname);
+Q16_GI = table([fm_GI_CI_lower(16);FM_GI_CI_lower(16)],[fm_GI_median(16);FM_GI_median(16)],[fm_GI_CI_upper(16);FM_GI_CI_upper(16)],'VariableNames',varname);
+Q20_GI = table([fm_GI_CI_lower(20);FM_GI_CI_lower(20)],[fm_GI_median(20);FM_GI_median(20)],[fm_GI_CI_upper(20);FM_GI_CI_upper(20)],'VariableNames',varname);
 
-Table_lr_GI=table(Q8_GI,Q12_GI,Q16_GI,Q20_GI,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_6=table(Q8_GI,Q12_GI,Q16_GI,Q20_GI,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 % Store the values in Tables.xlsx
 
@@ -340,9 +345,6 @@ cd('..');
 %-------------------------------------------------------------------------%
 
 %% Initialize
-s = 50; % enter a seed (for random draws)
-clc;
-close all;
 
 % Adjust path to folder where replication file is stored
 cd([cd '/EA_QUEST3_rep']);
@@ -359,9 +361,9 @@ dynare EA_Quest3_rep.mod
     % See Excel File : randomize paramaters
     % We can simulate the .mod file for each vector of parameters value
     % We obtain several responses to shocks
-    % We can a Bayesian confidence interval around the mean response
+    % We can a Bayesian confidence interval around the median response
 
-H=500; % Set the number of the simulations
+H=300; % Set the number of the simulations
 rng(s); % Specify the seed
 
 % Draws
@@ -371,11 +373,11 @@ rng(s); % Specify the seed
         
 % Draw vectors from normal law
 % Instable parameters
-GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
-SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
-SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
-SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
-SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
+% GSLAG_vec  =   normrnd(-0.4227,0.1041,1,H);
+% SFPE_vec  =   normrnd(0.8714,0.0567,1,H);
+% SFPXE_vec  =   normrnd(0.918,0.0473,1,H);
+% SFWE_vec  =   normrnd(0.7736,0.1565,1,H);
+% SIGEXE_vec  =   normrnd(2.5358,0.32,1,H);
 
 % Other parameters
 G1E_vec  =   normrnd(-0.0754,0.1066,1,H);
@@ -443,21 +445,15 @@ res_IG_GI=nan(n,H);
 res_fm_GI=nan(n,H);
 res_FM_GI=nan(n,H);
 
-% Responses to government transfer shock
-res_Y_TR=nan(n,H);
-res_Infl_TR=nan(n,H);
-res_TR_TR=nan(n,H);
-res_fm_TR=nan(n,H);
-res_FM_TR=nan(n,H);
 
 for h=1:H
     % We modify the parameters values with the i-th draw
     % Instable parameters (see appendix 2) (remove for small H)
-    set_param_value('GSLAG',GSLAG_vec(h));
-    set_param_value('SFPE',SFPE_vec(h));
-    set_param_value('SFPXE',SFPXE_vec(h));
-    set_param_value('SFWE',SFWE_vec(h));
-    set_param_value('SIGEXE',SIGEXE_vec(h));
+%     set_param_value('GSLAG',GSLAG_vec(h));
+%     set_param_value('SFPE',SFPE_vec(h));
+%     set_param_value('SFPXE',SFPXE_vec(h));
+%     set_param_value('SFWE',SFWE_vec(h));
+%     set_param_value('SIGEXE',SIGEXE_vec(h));
   
     % Other parameters
     set_param_value('G1E',G1E_vec(h));
@@ -514,7 +510,7 @@ for h=1:H
     res_fm_G(:,h)=res_Y_G(:,h)./res_G_G(:,h)/GSN; % Response period multiplier
     res_FM_G(:,h)=cumsum(res_Y_G(:,h))./cumsum(res_G_G(:,h))/GSN; % Response cumulative multiplier
     
-    % IRF to gov. consumption shock
+    % IRF to gov. investment shock
     res_Y_GI(:,h)=cumprod(1+E_GY_E_EPS_IG+GY0)-cumprod(1+GY0_vec); % Response Output
     res_Infl_GI(:,h)=E_PHI_E_EPS_IG; % Response Inflation
     res_IG_GI(:,h)=cumprod(1+E_GIG_E_EPS_IG+GY0)-cumprod(1+GY0_vec); % Response Gov. investment
@@ -524,42 +520,39 @@ for h=1:H
 end
 
 %% Compute mean and confidence intervals based on the H simulations
-    % Note:
-    % mean(matrix,2) -> sum over the raws
-    % So, i-th raw mean(matrix,2) = mean response value at the i-th quarter
-    % Idem for quantiles(matrix,p,2)
 
 % Get confidence interval --> IRF to governement consumption shock
-[Y_G_mean,Y_G_CI_lower,Y_G_CI_upper]=get_CI(res_Y_G); % Output IRFs
-[Infl_G_mean,Infl_G_CI_lower,Infl_G_CI_upper]=get_CI(res_Infl_G); % Inflation IRF
-[G_G_mean,G_G_CI_lower,G_G_CI_upper]=get_CI(res_G_G); % Gov. consumption IRF
-[fm_G_mean,fm_G_CI_lower,fm_G_CI_upper]=get_CI(res_fm_G); % Period multiplier
-[FM_G_mean,FM_G_CI_lower,FM_G_CI_upper]=get_CI(res_FM_G); % Cumulative multiplier
+[Y_G_median,Y_G_CI_lower,Y_G_CI_upper]=get_CI(res_Y_G); % Output IRFs
+[Infl_G_median,Infl_G_CI_lower,Infl_G_CI_upper]=get_CI(res_Infl_G); % Inflation IRF
+[G_G_median,G_G_CI_lower,G_G_CI_upper]=get_CI(res_G_G); % Gov. consumption IRF
+[fm_G_median,fm_G_CI_lower,fm_G_CI_upper]=get_CI(res_fm_G); % Period multiplier
+[FM_G_median,FM_G_CI_lower,FM_G_CI_upper]=get_CI(res_FM_G); % Cumulative multiplier
 
 % Get confidence interval --> IRF to governement investment shock
-[Y_GI_mean,Y_GI_CI_lower,Y_GI_CI_upper]=get_CI(res_Y_GI); % Output IRFs
-[Infl_GI_mean,Infl_GI_CI_lower,Infl_GI_CI_upper]=get_CI(res_Infl_GI); % Inflation IRF
-[IG_GI_mean,IG_GI_CI_lower,IG_GI_CI_upper]=get_CI(res_IG_GI); % Gov. investment IRF
-[fm_GI_mean,fm_GI_CI_lower,fm_GI_CI_upper]=get_CI(res_fm_GI); % Period multiplier
-[FM_GI_mean,FM_GI_CI_lower,FM_GI_CI_upper]=get_CI(res_FM_GI); % Cumulative multiplier
+[Y_GI_median,Y_GI_CI_lower,Y_GI_CI_upper]=get_CI(res_Y_GI); % Output IRFs
+[Infl_GI_median,Infl_GI_CI_lower,Infl_GI_CI_upper]=get_CI(res_Infl_GI); % Inflation IRF
+[IG_GI_median,IG_GI_CI_lower,IG_GI_CI_upper]=get_CI(res_IG_GI); % Gov. investment IRF
+[fm_GI_median,fm_GI_CI_lower,fm_GI_CI_upper]=get_CI(res_fm_GI); % Period multiplier
+[FM_GI_median,FM_GI_CI_lower,FM_GI_CI_upper]=get_CI(res_FM_GI); % Cumulative multiplier
 
+% fm_GI_median=Y_GI_median./IG_GI_median./IGSN;
 
 %% Build Figure 3, Figure 4, Table 3, Table 4 -> Consumption shock (noNWRnoLAC)
 
 t = 1:1:n; % x-axis
 
-% Plot simulation mean and confidence interval
+% Plot simulation median and confidence interval
     % It should look like the paper IRF
 
 figure ('Name','Response to a transitory gov. consumption shock (noNWRnoLAC)')
 subplot(3,1,1) % Output
-f_plot_with_CI(t,Y_G_mean,Y_G_CI_lower,Y_G_CI_upper,"Output response (noNWRnoLAC) : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,Y_G_median,Y_G_CI_lower,Y_G_CI_upper,"Output response (noNWRnoLAC) : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
 
 subplot(3,1,2) % Inflation
-f_plot_with_CI(t,Infl_G_mean,Infl_G_CI_lower,Infl_G_CI_upper,"Inflation response (noNWRnoLAC) : $$\pi_t- \pi_t^{SS}$$","Latex",1)
+f_plot_with_CI(t,Infl_G_median,Infl_G_CI_lower,Infl_G_CI_upper,"Inflation response (noNWRnoLAC) : $$\pi_t- \pi_t^{SS}$$","Latex",1)
 
 subplot(3,1,3) % Government consumption
-f_plot_with_CI(t,G_G_mean,G_G_CI_lower,G_G_CI_upper,"Gov. consumption response (noNWRnoLAC) : $$(G_t-G_t^{SS})/G_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,G_G_median,G_G_CI_lower,G_G_CI_upper,"Gov. consumption response (noNWRnoLAC) : $$(G_t-G_t^{SS})/G_0^{SS}$$","Latex",1)
 saveas(gcf,'Figure_3_IRF_cons_noNWRnoLAC','png')
 
 % Plot fiscal multipliers
@@ -569,30 +562,30 @@ t_small=t(1:horizon);
 
 figure ('Name','Gov. consumption fiscal multipliers')
 subplot(2,1,1)
-f_plot_with_CI(t_small,fm_G_mean(1:horizon),fm_G_CI_lower(1:horizon),fm_G_CI_upper(1:horizon),"Period gov. consumption multiplier (noNWRnoLAC) : $$fm_t$$","Latex",0)
+f_plot_with_CI(t_small,fm_G_median(1:horizon),fm_G_CI_lower(1:horizon),fm_G_CI_upper(1:horizon),"Period gov. consumption multiplier (noNWRnoLAC) : $$fm_t$$","Latex",0)
 
 subplot(2,1,2)
-f_plot_with_CI(t_small,FM_G_mean(1:horizon),FM_G_CI_lower(1:horizon),FM_G_CI_upper(1:horizon),"Cumulative gov. consumption multiplier (noNWRnoLAC) : $$FM_t$$","Latex",0)
+f_plot_with_CI(t_small,FM_G_median(1:horizon),FM_G_CI_lower(1:horizon),FM_G_CI_upper(1:horizon),"Cumulative gov. consumption multiplier (noNWRnoLAC) : $$FM_t$$","Latex",0)
 saveas(gcf,'Figure_4_multipliers_cons_noNWRnoLAC','png')
 
 % Fiscal multipliers in a table
 
 % Short run
-varname={'5%','Mean','95%'};
-Q1_G = table([fm_G_CI_lower(1);FM_G_CI_lower(1)],[fm_G_mean(1);FM_G_mean(1)],[fm_G_CI_upper(1);FM_G_CI_upper(1)], 'VariableNames',varname);
-Q2_G = table([fm_G_CI_lower(2);FM_G_CI_lower(2)],[fm_G_mean(2);FM_G_mean(2)],[fm_G_CI_upper(2);FM_G_CI_upper(2)],'VariableNames',varname);
-Q3_G = table([fm_G_CI_lower(3);FM_G_CI_lower(3)],[fm_G_mean(3);FM_G_mean(3)],[fm_G_CI_upper(3);FM_G_CI_upper(3)],'VariableNames',varname);
-Q4_G = table([fm_G_CI_lower(4);FM_G_CI_lower(4)],[fm_G_mean(4);FM_G_mean(4)],[fm_G_CI_upper(4);FM_G_CI_upper(4)],'VariableNames',varname);
+varname={'5%','Median','95%'};
+Q1_G = table([fm_G_CI_lower(1);FM_G_CI_lower(1)],[fm_G_median(1);FM_G_median(1)],[fm_G_CI_upper(1);FM_G_CI_upper(1)], 'VariableNames',varname);
+Q2_G = table([fm_G_CI_lower(2);FM_G_CI_lower(2)],[fm_G_median(2);FM_G_median(2)],[fm_G_CI_upper(2);FM_G_CI_upper(2)],'VariableNames',varname);
+Q3_G = table([fm_G_CI_lower(3);FM_G_CI_lower(3)],[fm_G_median(3);FM_G_median(3)],[fm_G_CI_upper(3);FM_G_CI_upper(3)],'VariableNames',varname);
+Q4_G = table([fm_G_CI_lower(4);FM_G_CI_lower(4)],[fm_G_median(4);FM_G_median(4)],[fm_G_CI_upper(4);FM_G_CI_upper(4)],'VariableNames',varname);
 
-Table_sr_G=table(Q1_G,Q2_G,Q3_G,Q4_G,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_3=table(Q1_G,Q2_G,Q3_G,Q4_G,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 %long-run 
-Q8_G = table([fm_G_CI_lower(8);FM_G_CI_lower(8)],[fm_G_mean(8);FM_G_mean(8)],[fm_G_CI_upper(8);FM_G_CI_upper(8)], 'VariableNames',varname);
-Q12_G = table([fm_G_CI_lower(12);FM_G_CI_lower(12)],[fm_G_mean(12);FM_G_mean(12)],[fm_G_CI_upper(12);FM_G_CI_upper(12)],'VariableNames',varname);
-Q16_G = table([fm_G_CI_lower(16);FM_G_CI_lower(16)],[fm_G_mean(16);FM_G_mean(16)],[fm_G_CI_upper(16);FM_G_CI_upper(16)],'VariableNames',varname);
-Q20_G = table([fm_G_CI_lower(20);FM_G_CI_lower(20)],[fm_G_mean(20);FM_G_mean(20)],[fm_G_CI_upper(20);FM_G_CI_upper(20)],'VariableNames',varname);
+Q8_G = table([fm_G_CI_lower(8);FM_G_CI_lower(8)],[fm_G_median(8);FM_G_median(8)],[fm_G_CI_upper(8);FM_G_CI_upper(8)], 'VariableNames',varname);
+Q12_G = table([fm_G_CI_lower(12);FM_G_CI_lower(12)],[fm_G_median(12);FM_G_median(12)],[fm_G_CI_upper(12);FM_G_CI_upper(12)],'VariableNames',varname);
+Q16_G = table([fm_G_CI_lower(16);FM_G_CI_lower(16)],[fm_G_median(16);FM_G_median(16)],[fm_G_CI_upper(16);FM_G_CI_upper(16)],'VariableNames',varname);
+Q20_G = table([fm_G_CI_lower(20);FM_G_CI_lower(20)],[fm_G_median(20);FM_G_median(20)],[fm_G_CI_upper(20);FM_G_CI_upper(20)],'VariableNames',varname);
 
-Table_lr_G=table(Q8,Q12,Q16,Q20,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_4=table(Q8_G,Q12_G,Q16_G,Q20_G,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 % Store the values in Tables.xlsx
 
@@ -610,18 +603,18 @@ writetable(Q20_G,'Tables_34_multipliers_noNWRnoLAC.xlsx','Sheet','LR','Range','L
 
 t = 1:1:n; % x-axis
 
-% Plot simulation mean and confidence interval
+% Plot simulation median and confidence interval
     % It should look like the paper IRF
 
 figure ('Name','Response to a transitory gov. investment shock (noNWRnoLAC)')
 subplot(3,1,1) % Output
-f_plot_with_CI(t,Y_GI_mean,Y_GI_CI_lower,Y_GI_CI_upper,"Output response (noNWRnoLAC) : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,Y_GI_median,Y_GI_CI_lower,Y_GI_CI_upper,"Output response (noNWRnoLAC) : $$(Y_t-Y_t^{SS})/Y_0^{SS}$$","Latex",1)
 
 subplot(3,1,2) % Inflation
-f_plot_with_CI(t,Infl_GI_mean,Infl_GI_CI_lower,Infl_GI_CI_upper,"Inflation response (noNWRnoLAC) : $$\pi_t- \pi_t^{SS}$$","Latex",1)
+f_plot_with_CI(t,Infl_GI_median,Infl_GI_CI_lower,Infl_GI_CI_upper,"Inflation response (noNWRnoLAC) : $$\pi_t- \pi_t^{SS}$$","Latex",1)
 
 subplot(3,1,3) % Government investment
-f_plot_with_CI(t,IG_GI_mean,IG_GI_CI_lower,IG_GI_CI_upper,"Gov. investment response (noNWRnoLAC) : $$(GI_t-GI_t^{SS})/GI_0^{SS}$$","Latex",1)
+f_plot_with_CI(t,IG_GI_median,IG_GI_CI_lower,IG_GI_CI_upper,"Gov. investment response (noNWRnoLAC) : $$(GI_t-GI_t^{SS})/GI_0^{SS}$$","Latex",1)
 saveas(gcf,'Figure_7_IRF_inv_noNWRnoLAC','png')
 
 % Plot fiscal multipliers
@@ -631,42 +624,42 @@ t_small=t(1:horizon);
 
 figure ('Name','Gov. investment fiscal multipliers')
 subplot(2,1,1)
-f_plot_with_CI(t_small,fm_GI_mean(1:horizon),fm_GI_CI_lower(1:horizon),fm_GI_CI_upper(1:horizon),"Period gov. investment multiplier : $$fm_t$$","Latex",0)
+f_plot_with_CI(t_small,fm_GI_median(1:horizon),fm_GI_CI_lower(1:horizon),fm_GI_CI_upper(1:horizon),"Period gov. investment multiplier (noNWRnoLAC) : $$fm_t$$","Latex",0)
 
 subplot(2,1,2)
-f_plot_with_CI(t_small,FM_GI_mean(1:horizon),FM_GI_CI_lower(1:horizon),FM_GI_CI_upper(1:horizon),"Cumulative gov. investment multiplier : $$FM_t$$","Latex",0)
+f_plot_with_CI(t_small,FM_GI_median(1:horizon),FM_GI_CI_lower(1:horizon),FM_GI_CI_upper(1:horizon),"Cumulative gov. investment multiplier (noNWRnoLAC) : $$FM_t$$","Latex",0)
 saveas(gcf,'Figure_8_multipliers_inv_noNWRnoLAC','png')
 
 % Fiscal multipliers in a table
 
 % Short run
-varname={'5%','Mean','95%'};
-Q1_GI = table([fm_GI_CI_lower(1);FM_GI_CI_lower(1)],[fm_GI_mean(1);FM_GI_mean(1)],[fm_GI_CI_upper(1);FM_GI_CI_upper(1)], 'VariableNames',varname);
-Q2_GI = table([fm_GI_CI_lower(2);FM_GI_CI_lower(2)],[fm_GI_mean(2);FM_GI_mean(2)],[fm_GI_CI_upper(2);FM_GI_CI_upper(2)],'VariableNames',varname);
-Q3_GI = table([fm_GI_CI_lower(3);FM_GI_CI_lower(3)],[fm_GI_mean(3);FM_GI_mean(3)],[fm_GI_CI_upper(3);FM_GI_CI_upper(3)],'VariableNames',varname);
-Q4_GI = table([fm_GI_CI_lower(4);FM_GI_CI_lower(4)],[fm_GI_mean(4);FM_GI_mean(4)],[fm_GI_CI_upper(4);FM_GI_CI_upper(4)],'VariableNames',varname);
+varname={'5%','Median','95%'};
+Q1_GI = table([fm_GI_CI_lower(1);FM_GI_CI_lower(1)],[fm_GI_median(1);FM_GI_median(1)],[fm_GI_CI_upper(1);FM_GI_CI_upper(1)], 'VariableNames',varname);
+Q2_GI = table([fm_GI_CI_lower(2);FM_GI_CI_lower(2)],[fm_GI_median(2);FM_GI_median(2)],[fm_GI_CI_upper(2);FM_GI_CI_upper(2)],'VariableNames',varname);
+Q3_GI = table([fm_GI_CI_lower(3);FM_GI_CI_lower(3)],[fm_GI_median(3);FM_GI_median(3)],[fm_GI_CI_upper(3);FM_GI_CI_upper(3)],'VariableNames',varname);
+Q4_GI = table([fm_GI_CI_lower(4);FM_GI_CI_lower(4)],[fm_GI_median(4);FM_GI_median(4)],[fm_GI_CI_upper(4);FM_GI_CI_upper(4)],'VariableNames',varname);
 
-Table_sr_GI=table(Q1_GI,Q2_GI,Q3_GI,Q4_GI,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_7=table(Q1_GI,Q2_GI,Q3_GI,Q4_GI,'VariableNames',{'Quarter 1','Quarter 2','Quarter 3','Quarter 4'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 %long-run 
-Q8_GI = table([fm_GI_CI_lower(8);FM_GI_CI_lower(8)],[fm_GI_mean(8);FM_GI_mean(8)],[fm_GI_CI_upper(8);FM_GI_CI_upper(8)], 'VariableNames',varname);
-Q12_GI = table([fm_GI_CI_lower(12);FM_GI_CI_lower(12)],[fm_GI_mean(12);FM_GI_mean(12)],[fm_GI_CI_upper(12);FM_GI_CI_upper(12)],'VariableNames',varname);
-Q16_GI = table([fm_GI_CI_lower(16);FM_GI_CI_lower(16)],[fm_GI_mean(16);FM_GI_mean(16)],[fm_GI_CI_upper(16);FM_GI_CI_upper(16)],'VariableNames',varname);
-Q20_GI = table([fm_GI_CI_lower(20);FM_GI_CI_lower(20)],[fm_GI_mean(20);FM_GI_mean(20)],[fm_GI_CI_upper(20);FM_GI_CI_upper(20)],'VariableNames',varname);
+Q8_GI = table([fm_GI_CI_lower(8);FM_GI_CI_lower(8)],[fm_GI_median(8);FM_GI_median(8)],[fm_GI_CI_upper(8);FM_GI_CI_upper(8)], 'VariableNames',varname);
+Q12_GI = table([fm_GI_CI_lower(12);FM_GI_CI_lower(12)],[fm_GI_median(12);FM_GI_median(12)],[fm_GI_CI_upper(12);FM_GI_CI_upper(12)],'VariableNames',varname);
+Q16_GI = table([fm_GI_CI_lower(16);FM_GI_CI_lower(16)],[fm_GI_median(16);FM_GI_median(16)],[fm_GI_CI_upper(16);FM_GI_CI_upper(16)],'VariableNames',varname);
+Q20_GI = table([fm_GI_CI_lower(20);FM_GI_CI_lower(20)],[fm_GI_median(20);FM_GI_median(20)],[fm_GI_CI_upper(20);FM_GI_CI_upper(20)],'VariableNames',varname);
 
-Table_lr_GI=table(Q8_GI,Q12_GI,Q16_GI,Q20_GI,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
+Table_8=table(Q8_GI,Q12_GI,Q16_GI,Q20_GI,'VariableNames',{'Year 2','Year 3','Year 4','Year 5'},'RowNames',{'period fiscal multiplier','cumulative fiscal multiplier'});
 
 % Store the values in Tables.xlsx
 
-writetable(Q1_GI,'Tables_56_multipliers_investment.xlsx','Sheet','SR','Range','C3')
-writetable(Q2_GI,'Tables_56_multipliers_investment.xlsx','Sheet','SR','Range','F3')
-writetable(Q3_GI,'Tables_56_multipliers_investment.xlsx','Sheet','SR','Range','I3')
-writetable(Q4_GI,'Tables_56_multipliers_investment.xlsx','Sheet','SR','Range','L3')
+writetable(Q1_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','SR','Range','C3')
+writetable(Q2_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','SR','Range','F3')
+writetable(Q3_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','SR','Range','I3')
+writetable(Q4_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','SR','Range','L3')
 
-writetable(Q8_GI,'Tables_56_multipliers_investment.xlsx','Sheet','LR','Range','C3')
-writetable(Q12_GI,'Tables_56_multipliers_investment.xlsx','Sheet','LR','Range','F3')
-writetable(Q16_GI,'Tables_56_multipliers_investment.xlsx','Sheet','LR','Range','I3')
-writetable(Q20_GI,'Tables_56_multipliers_investment.xlsx','Sheet','LR','Range','L3')
+writetable(Q8_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','LR','Range','C3')
+writetable(Q12_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','LR','Range','F3')
+writetable(Q16_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','LR','Range','I3')
+writetable(Q20_GI,'Tables_78_multipliers_investment_noNWRnoLAC.xlsx','Sheet','LR','Range','L3')
 
 % Go back to original path
 cd('..');

@@ -1,0 +1,199 @@
+Starting Dynare (version 5.0).
+Calling Dynare with arguments: none
+Starting preprocessing of the model file ...
+Substitution of endo lags >= 2: added 3 auxiliary variables and equations.
+Found 107 equation(s).
+Evaluating expressions...done
+Computing static model derivatives (order 1).
+Computing dynamic model derivatives (order 1).
+Processing outputs ...
+done
+Preprocessing completed.
+
+
+STEADY-STATE RESULTS:
+
+E_BGYN            		 2.4
+E_BWRY            		 -1.46345e-14
+E_CLCSN           		 0.38621
+E_DBGYN           		 0
+E_LER             		 1.03947e-09
+E_ETA             		 0.9
+E_GC              		 0.003
+E_GCL             		 0.00413378
+E_GCLC            		 0.003
+E_GCNLC           		 0.003
+E_GE              		 3.73071e-16
+E_GEX             		 0.003
+E_GEXL            		 0.01152
+E_GG              		 0.003
+E_GGL             		 0.00413378
+E_GI              		 0.003
+E_GIG             		 0.003
+E_GIL             		 0.00413378
+E_GIM             		 0.003
+E_GIML            		 0.01152
+E_GK              		 0.003
+E_GKG             		 0.003
+E_GL              		 0
+E_GSN             		 0.203
+E_GTAX            		 0.008
+E_GTFP            		 0.00242308
+E_GTFPUCAP        		 0.00126
+E_GTR             		 0.003
+E_GUC             		 -4.22794e-16
+E_GUCAP           		 0
+E_GWRY            		 0
+E_GY              		 0.003
+E_GYL             		 0.00413378
+E_GYPOT           		 0.003
+E_GYW             		 0.003
+E_INOM            		 0.00901606
+E_INOMW           		 0.00901606
+E_LL              		 -0.430769
+E_LL0             		 -0.430769
+E_LBGYN           		 0.875469
+E_LCSN            		 -0.538115
+E_LCLCSN          		 -0.951374
+E_LCNLCSN         		 -0.370201
+E_LEXYN           		 -1.95758
+E_LGSN            		 -1.59455
+E_LIGSN           		 -3.68888
+E_LIMYN           		 -1.95758
+E_LIK             		 -3.53586
+E_LIKG            		 -4.09632
+E_LISN            		 -1.6705
+E_LOL             		 0
+E_LPCP            		 7.33866e-11
+E_LPMP            		 5.19735e-10
+E_LPXP            		 0
+E_LTRYN           		 -1.78096
+E_LUCYN           		 4.99556
+E_LUCLCYN         		 3.98149
+E_LYGAP           		 -3.30674e-21
+E_LYKPPI          		 -1.86535
+E_LYWR            		 0.328518
+E_LYWY            		 -5.65151e-13
+E_MRY             		 0.996416
+E_PHI             		 0.005
+E_PHIC            		 0.005
+E_PHIPI           		 0
+E_PHIM            		 0.005
+E_PHIML           		 0.00103349
+E_PHIW            		 0.005
+E_PHIX            		 0.005
+E_PHIXL           		 0.00103349
+E_Q               		 1
+E_R               		 0.00401606
+E_TAXYN           		 -0.0141759
+E_TBYN            		 -1.95775e-18
+E_TRTAXYN         		 0.182652
+E_TRW             		 0.359992
+E_TRYN            		 0.168476
+E_TW              		 0.2
+E_UCAP            		 0.999946
+E_UCAP0           		 0.999946
+E_VL              		 19.0693
+E_VLLC            		 8.86019
+E_WPHI            		 0.008
+E_WRPHI           		 0.003
+E_WS              		 0.468
+E_WSW             		 0.2808
+E_ZEPS_C          		 0
+E_ZEPS_ETA        		 0
+E_ZEPS_ETAM       		 0
+E_ZEPS_ETAX       		 0
+E_ZEPS_EX         		 0
+E_ZEPS_G          		 0
+E_ZEPS_IG         		 0
+E_ZEPS_L          		 0
+E_ZEPS_M          		 0
+E_ZEPS_PPI        		 0
+E_ZEPS_RPREME     		 0
+E_ZEPS_RPREMK     		 0
+E_ZEPS_TR         		 0
+E_ZEPS_W          		 0
+E_ZPHIT           		 0.005
+E_LCY             		 -0.538115
+E_LGY             		 -1.59455
+E_LWS             		 -0.759287
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+       1.964e-33        1.964e-33                0
+       5.928e-19        5.928e-19                0
+        8.48e-18        -8.48e-18                0
+        1.67e-17         1.67e-17                0
+       1.202e-16        1.202e-16                0
+       1.627e-16        1.627e-16                0
+       6.758e-16       -6.758e-16                0
+       3.948e-15        3.948e-15                0
+       4.437e-15        4.437e-15                0
+       1.281e-13       -1.281e-13                0
+       5.356e-13        5.356e-13                0
+       3.474e-10       -1.957e-13        3.474e-10
+       3.474e-10       -1.957e-13       -3.474e-10
+        0.001399        -0.001399                0
+          0.0893           0.0893                0
+          0.1095           0.1095                0
+          0.1473           0.1473                0
+          0.2672           0.2672                0
+          0.2983           0.2983                0
+          0.3718           0.3059           0.2115
+          0.3718           0.3059          -0.2115
+          0.4564          -0.4564                0
+          0.4688          -0.4688                0
+          0.4958           0.4803           0.1227
+          0.4958           0.4803          -0.1227
+          0.5022          -0.0341           0.5011
+          0.5022          -0.0341          -0.5011
+          0.5817           0.5817                0
+          0.6726           0.6675          0.08229
+          0.6726           0.6675         -0.08229
+           0.692           0.6912          0.03215
+           0.692           0.6912         -0.03215
+          0.7815           0.7815                0
+           0.785            0.785                0
+          0.8109           0.8109                0
+          0.8351           0.8351                0
+           0.853            0.853                0
+          0.8636           0.8636                0
+          0.8997           0.8997                0
+          0.9144           0.9144                0
+          0.9148           0.9148                0
+          0.9243           0.9243                0
+          0.9436           0.9436                0
+          0.9557           0.9557                0
+          0.9611            0.961           0.0021
+          0.9611            0.961          -0.0021
+           0.975            0.975                0
+           0.975            0.975                0
+          0.9842           0.9842                0
+          0.9843           0.9843                0
+            0.99             0.99                0
+           0.997            0.997                0
+          0.9981           0.9981        6.559e-05
+          0.9981           0.9981       -6.559e-05
+          0.9998           0.9998                0
+           1.052            1.052         0.006865
+           1.052            1.052        -0.006865
+           1.054            1.054                0
+           1.197            1.195          0.05041
+           1.197            1.195         -0.05041
+           1.283            1.283                0
+           1.553            1.553                0
+           2.551            2.551                0
+           3.707            3.707                0
+        1.95e+16         1.95e+16                0
+       7.561e+16        7.561e+16                0
+       2.584e+18       -2.584e+18                0
+       3.154e+37        3.154e+37                0
+
+
+There are 13 eigenvalue(s) larger than 1 in modulus 
+for 13 forward-looking variable(s)
+
+The rank condition is verified.
+
+Total computing time : 0h00m02s
