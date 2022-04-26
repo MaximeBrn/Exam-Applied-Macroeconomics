@@ -1,6 +1,7 @@
 # Exam-Applied-Macroeconomics
 DSGE 3 Mutliplicateur Budgétaire / Fiscal Multiplier
 
+Report link https://fr.overleaf.com/project/624dacf352634d77d6f59224
 # The topic
 
 A l’aide d’un modèle DSGE (déjà) estimé par techniques bayesiennes sur données zone euro, déterminez la réponse du PIB et de l’inflation à des chocs transitoires et permanents de dépense publique. Quantifier les multiplicateurs budgétaires de court et long termes. Caractériser l’intervalle de confiance bayesien entourant les multiplicateurs.
