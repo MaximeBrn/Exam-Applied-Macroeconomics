@@ -25,7 +25,7 @@ cliqcirf =  cumsum(E_GCLC_E_EPS_G); % Private consumption growth (non-Ricardian 
 tbynirf =  E_TBYN_E_EPS_G; % Nominal trade balance to GDP share
 ggirf =  cumsum(E_GG_E_EPS_G);  % Gov consumption growth
 gigirf =  cumsum(E_GIG_E_EPS_G); % Gov investment growth
-gtrirf =  cumsum(E_GTR_E_EPS_G); % Transfers growth
+gtrirf =  cumsum(E_GTR_E_EPS_TR); % Transfers growth
 
 % Variables in Figure 1.b
 glirf =  cumsum(E_GL_E_EPS_G); % Employment rate growth
