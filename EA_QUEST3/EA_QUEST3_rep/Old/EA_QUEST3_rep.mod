@@ -632,6 +632,7 @@ end;
 steady;
 check;
  
-stoch_simul (order=1, irf = 40, ar=0, periods=0, nograph, noprint, irf_shocks=(E_EPS_G,E_EPS_IG)) E_LIGSN E_GSN E_LGSN E_INOM E_PHIC E_LYGAP E_PHI E_GY E_GC E_GI E_GCNLC E_GCLC E_TBYN E_GG E_GIG E_GTR E_GL E_GWRY E_DBGYN E_R E_GE E_GTFP;
+stoch_simul (order=1, irf = 40, ar=0, periods=0, nograph, noprint, irf_shocks=(E_EPS_G,E_EPS_IG));
+
 //stoch_simul inflation interest outputgap;
 //stoch_simul(order=1) E_INOM E_PHIC E_LYGAP E_GY E_GTR E_GL;
